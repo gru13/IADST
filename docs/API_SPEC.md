@@ -1,105 +1,92 @@
-## ✅ 1. **Authentication APIs**
+### ✅ 1. **Authentication APIs**
 
-(For login and session management)
-
-* `POST /auth/login` – Login for teacher/admin
-* `POST /auth/logout` – Logout (if session-based)
-
----
-
-## ✅ 2. **Admin APIs**
-
-(Used only by the admin via admin panel)
-
-### 👤 **Teacher Management**
-
-* `POST /admin/teachers` – Create teacher
-* `GET /admin/teachers` – List all teachers
-* `PUT /admin/teachers/{teacherId}` – Update teacher
-* `DELETE /admin/teachers/{teacherId}` – Delete teacher
-
-### 👨‍🎓 **Student Management**
-
-* `POST /admin/students` – Create student
-* `GET /admin/students` – List all students
-* `PUT /admin/students/{studentId}` – Update student
-* `DELETE /admin/students/{studentId}` – Delete student
-
-### 📚 **Class Management**
-
-* `POST /admin/classes` – Create class
-* `GET /admin/classes` – List all classes
-* `PUT /admin/classes/{classId}` – Update class (e.g., assign teacher)
-* `DELETE /admin/classes/{classId}` – Delete class
-
-### 👥 **Assign Students to Class**
-
-* `POST /admin/classes/{classId}/students` – Assign students to a class (accepts list of studentIds)
-* `GET /admin/classes/{classId}/students` – List assigned students in a class
-* `DELETE /admin/classes/{classId}/students/{studentId}` – Remove a student from class
+| Endpoint            | Router File       | Controller                 | Service           | Description                              |
+| ------------------- | ----------------- | -------------------------- | ----------------- | ---------------------------------------- |
+| `POST /auth/login`  | `routers/auth.py` | `auth_controller.login()`  | `auth_service.py` | Authenticates a user and returns tokens. |
+| `POST /auth/logout` | `routers/auth.py` | `auth_controller.logout()` | —                 | Logs out a user and invalidates tokens.  |
 
 ---
 
-## ✅ 3. **Teacher APIs**
+### ✅ 2. **Admin APIs**
 
-(Used by teachers for CRUD on questions and assignments)
+#### 👤 Teacher Management
 
-### 📝 **Question Bank Management**
+| Endpoint                      | Router File        | Controller Function                 | Service Layer | Description                            |
+| ----------------------------- | ------------------ | ----------------------------------- | ------------- | -------------------------------------- |
+| `POST /admin/teachers`        | `routers/admin.py` | `admin_controller.create_teacher()` | —             | Add a new teacher to the system.       |
+| `GET /admin/teachers`         | `routers/admin.py` | `admin_controller.get_teachers()`   | —             | Retrieve a list of all teachers.       |
+| `PUT /admin/teachers/{id}`    | `routers/admin.py` | `admin_controller.update_teacher()` | —             | Update details of an existing teacher. |
+| `DELETE /admin/teachers/{id}` | `routers/admin.py` | `admin_controller.delete_teacher()` | —             | Remove a teacher from the system.      |
 
-* `POST /teacher/questions` – Create a question (metadata in MySQL, body in MongoDB)
-* `GET /teacher/questions` – List all questions (filter by topic, difficulty, etc.)
-* `GET /teacher/questions/{questionId}` – Get full question (metadata + body)
-* `PUT /teacher/questions/{questionId}` – Update question details
-* `DELETE /teacher/questions/{questionId}` – Delete a question
+#### 👨‍🎓 Student Management
 
-### 💡 **Solution Management**
 
-* `POST /teacher/questions/{questionId}/solution` – Add or update a solution for a question
-* `GET /teacher/questions/{questionId}/solution` – Get solution for a question
+| Endpoint                      | Router File        | Controller Function                 | Service Layer | Description                            |
+| ----------------------------- | ------------------ | ----------------------------------- | ------------- | -------------------------------------- |
+| `POST /admin/students`        | `routers/admin.py` | `admin_controller.create_student()` | —             | Add a new student.                     |
+| `GET /admin/students`         | `routers/admin.py` | `admin_controller.get_students()`   | —             | Retrieve a list of all students.       |
+| `PUT /admin/students/{id}`    | `routers/admin.py` | `admin_controller.update_student()` | —             | Update details of an existing student. |
+| `DELETE /admin/students/{id}` | `routers/admin.py` | `admin_controller.delete_student()` | —             | Remove a student from the system.      |
 
----
+#### 📚 Class Management
 
-## ✅ 4. **Assignment APIs**
-
-(Used by teachers for assignment management)
-
-### 📄 **Assignment CRUD**
-
-* `POST /teacher/assignments` – Create an assignment (with topic, difficulty distribution, and number of questions)
-* `GET /teacher/assignments` – List all assignments
-* `GET /teacher/assignments/{assignmentId}` – Get metadata of a specific assignment
-* `DELETE /teacher/assignments/{assignmentId}` – Delete an assignment
-
-### 🎲 **Random Question Generation**
-
-* `POST /teacher/assignments/{assignmentId}/generate` – Pseudo-randomly assign questions for each student using classId, studentId, teacherId, etc.
-* `GET /teacher/assignments/{assignmentId}/preview` – Show preview table with students and their questions
-* `POST /teacher/assignments/{assignmentId}/regenerate` – Regenerate question mapping for the assignment
-
-### 📨 **PDF Generation & Email Sending**
-
-* `POST /teacher/assignments/{assignmentId}/generate-pdfs` – Generate PDF assignments for each student
-* `POST /teacher/assignments/{assignmentId}/send-emails` – Send generated assignment PDFs to students via email using a faculty email template
+| Endpoint                                          | Router File        | Controller Function                     | Service Layer | Description                               |
+| ------------------------------------------------- | ------------------ | --------------------------------------- | ------------- | ----------------------------------------- |
+| `POST /admin/classes`                             | `routers/admin.py` | `admin_controller.create_class()`       | —             | Create a new class.                       |
+| `GET /admin/classes`                              | `routers/admin.py` | `admin_controller.get_classes()`        | —             | Retrieve a list of all classes.           |
+| `PUT /admin/classes/{id}`                         | `routers/admin.py` | `admin_controller.update_class()`       | —             | Update class details.                     |
+| `DELETE /admin/classes/{id}`                      | `routers/admin.py` | `admin_controller.delete_class()`       | —             | Delete a class.                           |
+| `POST /admin/classes/{id}/students`               | `routers/admin.py` | `admin_controller.assign_students()`    | —             | Assign students to a class.               |
+| `GET /admin/classes/{id}/students`                | `routers/admin.py` | `admin_controller.get_class_students()` | —             | Get list of students assigned to a class. |
+| `DELETE /admin/classes/{id}/students/{studentId}` | `routers/admin.py` | `admin_controller.remove_student()`     | —             | Remove a specific student from a class.   |
 
 ---
 
-## ✅ 5. **Utility APIs**
+### ✅ 3. **Teacher APIs**
 
-### 📚 **Source Name Retrieval**
+#### 📝 Question Bank
 
-* `GET /sources` – List all available source names for questions.
+| Endpoint                         | Router File          | Controller                             | Service               | Description                                        |
+| -------------------------------- | -------------------- | -------------------------------------- | --------------------- | -------------------------------------------------- |
+| `POST /teacher/questions`        | `routers/teacher.py` | `teacher_controller.create_question()` | `question_service.py` | Add a new question to the question bank.           |
+| `GET /teacher/questions`         | `routers/teacher.py` | `teacher_controller.list_questions()`  | `question_service.py` | Retrieve all questions created by the teacher.     |
+| `GET /teacher/questions/{id}`    | `routers/teacher.py` | `teacher_controller.get_question()`    | `question_service.py` | Fetch a specific question by ID.                   |
+| `PUT /teacher/questions/{id}`    | `routers/teacher.py` | `teacher_controller.update_question()` | `question_service.py` | Update the content or metadata of a question.      |
+| `DELETE /teacher/questions/{id}` | `routers/teacher.py` | `teacher_controller.delete_question()` | `question_service.py` | Delete a specific question from the question bank. |
 
-### 📝 **Topic Retrieval**
+#### 💡 Solution
 
-* `GET /topics` – List of available topics for questions.
+| Endpoint                                | Router File          | Controller Function                           | Service Layer | Description                                    |
+| --------------------------------------- | -------------------- | --------------------------------------------- | ------------- | ---------------------------------------------- |
+| `POST /teacher/questions/{id}/solution` | `routers/teacher.py` | `teacher_controller.add_or_update_solution()` | —             | Add or update the solution for a question.     |
+| `GET /teacher/questions/{id}/solution`  | `routers/teacher.py` | `teacher_controller.get_solution()`           | —             | Retrieve the solution for a specific question. |
 
-### ⚖️ **Difficulty Retrieval**
+---
 
-* `GET /difficulties` – Enum list of difficulties (easy, medium, hard)
+### ✅ 4. **Assignment APIs**
 
-### 👨‍🏫 **Teacher Classes**
+| Endpoint                                       | Router File          | Controller                               | Service                 | Description                                                       |
+| ---------------------------------------------- | -------------------- | ---------------------------------------- | ----------------------- | ----------------------------------------------------------------- |
+| `POST /teacher/assignments`                    | `routers/teacher.py` | `teacher_controller.create_assignment()` | `assignment_service.py` | Create a new assignment by selecting questions and class targets. |
+| `GET /teacher/assignments`                     | `routers/teacher.py` | `teacher_controller.list_assignments()`  | `assignment_service.py` | Get a list of all created assignments.                            |
+| `GET /teacher/assignments/{id}`                | `routers/teacher.py` | `teacher_controller.get_assignment()`    | —                       | Retrieve details of a specific assignment.                        |
+| `DELETE /teacher/assignments/{id}`             | `routers/teacher.py` | `teacher_controller.delete_assignment()` | —                       | Delete a specific assignment.                                     |
+| `POST /teacher/assignments/{id}/generate`      | `routers/teacher.py` | `teacher_controller.generate()`          | `assignment_service.py` | Generate student-wise question mappings for the assignment.       |
+| `GET /teacher/assignments/{id}/preview`        | `routers/teacher.py` | `teacher_controller.preview()`           | `assignment_service.py` | Preview assignment data including mapping before finalizing.      |
+| `POST /teacher/assignments/{id}/regenerate`    | `routers/teacher.py` | `teacher_controller.regenerate()`        | `assignment_service.py` | Re-generate assignment mappings if changes are needed.            |
+| `POST /teacher/assignments/{id}/generate-pdfs` | `routers/teacher.py` | `teacher_controller.generate_pdfs()`     | `email_pdf_service.py`  | Generate PDFs of assignments per student.                         |
+| `POST /teacher/assignments/{id}/send-emails`   | `routers/teacher.py` | `teacher_controller.send_emails()`       | `email_pdf_service.py`  | Email the assignment PDFs to students automatically.              |
 
-* `GET /teacher/{teacherId}/classes` – List classes owned by a teacher.
+---
+
+### ✅ 5. **Utility APIs**
+
+| Endpoint                    | Router File          | Controller Function                     | Service Layer | Description                                                |
+| --------------------------- | -------------------- | --------------------------------------- | ------------- | ---------------------------------------------------------- |
+| `GET /sources`              | `routers/teacher.py` | `teacher_controller.get_sources()`      | —             | Get list of sources  (leetcode, hackerrank, codechef).     |
+| `GET /topics`               | `routers/teacher.py` | `teacher_controller.get_topics()`       | —             | Get list of predefined topics to tag questions.            |
+| `GET /difficulties`         | `routers/teacher.py` | `teacher_controller.get_difficulties()` | —             | Get supported difficulty levels (easy, medium, hard).      |
+| `GET /teacher/{id}/classes` | `routers/teacher.py` | `teacher_controller.get_my_classes()`   | —             | Get classes assigned to the logged-in teacher.             |
 
 ---
 
