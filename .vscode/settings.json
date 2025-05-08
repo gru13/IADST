@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    ".env*": "dotenv"
+  },
+  "github.copilot.enable": {
+    "*": true,
+    "dotenv": false
+  },
+  "search.exclude": {
+    "**/.env": true
+  }
+}
