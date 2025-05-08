@@ -1,7 +1,3 @@
-Here is the **complete API list** for your app, organized by feature/module and role-based access.
-
----
-
 ## ✅ 1. **Authentication APIs**
 
 (For login and session management)
@@ -127,5 +123,3 @@ Here is the **complete API list** for your app, organized by feature/module and 
 | **Utility: Teacher Classes**            | `/teacher/{teacherId}/classes`                                                                                                                  |
 
 ---
-
-This API list should cover all the core functionalities of your project. You can now proceed with the implementation or further refine these endpoints as necessary!
