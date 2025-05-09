@@ -1,1 +1,4 @@
-# auth_controller.py
+# controllers/auth_controller.py
+"""
+Handles authentication logic.
+"""

@@ -1,0 +1,75 @@
+# Docker Compose configuration
+version: '3.8'
+
+services:
+  # FastAPI Backend Service
+  backend:
+    build:
+      context: ./backend  # Path to your backend directory
+    container_name: fastapi-backend
+    ports:
+      - "8002:8000"  # Exposing FastAPI app on port 8000
+    depends_on:
+      - mysql
+      - mongo
+    volumes:
+      - ./backend:/app  # Mount the backend directory into the container (for local development)
+      - ./docker-data/mysql:/var/lib/mysql  # Persist MySQL data
+      - ./docker-data/mongo:/data/db  # Persist MongoDB data
+    networks:
+      - backend-network
+
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # Root password for MySQL
+      MYSQL_USER: ${MYSQL_USER}  # Custom user for your database
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}  # Custom user's password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}  # Default database to create on startup
+    ports:
+      - "8000:3306"  # Exposing MySQL on port 3306 (accessible from host)
+    volumes:
+      - ./docker-data/mysql:/var/lib/mysql  # Persistent volume for MySQL data
+    networks:
+      - backend-network
+
+  # MongoDB Service
+  mongo:
+    image: mongo:latest
+    container_name: mongo-db
+    ports:
+      - "8001:27017"  # Exposing MongoDB on port 27017 (accessible from host)
+    volumes:
+      - ./docker-data/mongo:/data/db  # Persistent volume for MongoDB data
+    networks:
+      - backend-network
+
+  # React Frontend Service
+  frontend:
+    build:
+      context: ./frontend  # Path to your frontend directory
+    container_name: react-frontend
+    ports:
+      - "8003:3000"  # Exposing React app on port 3000
+    volumes:
+      - ./frontend:/app  # Mount the frontend directory into the container (for local development)
+    depends_on:
+      - backend
+    networks:
+      - frontend-network
+
+# Networks definition
+networks:
+  backend-network:
+    driver: bridge
+  frontend-network:
+    driver: bridge
+
+# Volumes for persistent data
+volumes:
+  mysql_data:
+    driver: local
+  mongo_data:
+    driver: local

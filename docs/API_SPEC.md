@@ -1,3 +1,5 @@
+# Endpoints specifications
+
 ### ✅ 1. **Authentication APIs**
 
 | Endpoint            | Router File       | Controller                 | Service           | Description                              |

@@ -1,3 +1,4 @@
+# Project Overview
 
 ---
 
@@ -156,4 +157,19 @@ Used for managing structured and relational data.
 * **Students are passive**: Their data is managed by Admin for assignment delivery purposes (e.g., name + email).
 * **No login or interface** for students is required at this stage.
 * **Future functionality** like submission or performance tracking can revisit student interactivity.
+* **No need for a separate teacher login**: Each teacher is associated with their class(es) and can only manage their own questions and assignments.
 
+---
+
+## 🐳 Docker Compose Overview
+
+### **Service Architecture**
+
+The project uses Docker Compose to orchestrate multiple services, each encapsulated in its own container. The following table summarizes the services:
+
+| **Service**  | **Container Name** | **Exposed Ports** | **Description**                                         | **Dependencies**                 | **Volumes**                                                                            |
+| ------------ | ------------------ | ----------------- | ------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- |
+| **Frontend** | `react-frontend`   | `8003:3000`       | React frontend, accessible via `http://localhost:8003`  | Depends on: **Backend**          | `./frontend:/app` (live reloading during development)                                  |
+| **Backend**  | `fastapi-backend`  | `8002:8000`       | FastAPI backend, accessible via `http://localhost:8002` | Depends on: **MySQL**, **Mongo** | `./backend:/app`, `./docker-data/mysql:/var/lib/mysql`, `./docker-data/mongo:/data/db` |
+| **MySQL**    | `mysql-db`         | `8000:3306`       | MySQL database, accessible via `localhost:8000` (host)  | None                             | `./docker-data/mysql:/var/lib/mysql` (persistent MySQL data)                           |
+| **MongoDB**  | `mongo-db`         | `8001:27017`      | MongoDB database, accessible via `localhost:8001` (host)| None                             | `./docker-data/mongo:/data/db` (persistent MongoDB data)                               |

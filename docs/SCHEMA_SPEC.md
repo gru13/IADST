@@ -1,3 +1,5 @@
+# Specifications of Schemas
+
 ## 🟦 **MySQL Schema (Relational DB)**
 
 ```sql

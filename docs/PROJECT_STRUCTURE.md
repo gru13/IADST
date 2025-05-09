@@ -4,8 +4,8 @@
 │   │   ├── main.py                        # FastAPI entrypoint: initializes app, routers, middleware
 │   │   │  
 │   │   ├── config                         # Database connection configurations
-│   │   │   ├── mysql.py                   # SQLAlchemy engine & SessionLocal for MySQL
-│   │   │   └── mongo.py                   # Motor (async) client & MongoDB collection handles
+│   │   │   ├── mysql.py                   # SQLAlchemy engine & SessionLocal for MySQL (exposed on 8000)
+│   │   │   └── mongo.py                   # Motor (async) client & MongoDB collection handles (exposed on 8001)
 │   │   │  
 │   │   ├── routers                        # Route definitions mapping URLs to controllers
 │   │   │   ├── auth.py                    # `/auth/login`, `/auth/logout` endpoints
@@ -29,7 +29,7 @@
 │   │   │       ├── question_text.py       # `questionTexts` document schema
 │   │   │       ├── solution_text.py       # `solutionTexts` document schema
 │   │   │       ├── class_doc.py           # `classes` document schema
-│   │   │       └── assignment_doc.py      # `assignments` document schemab
+│   │   │       └── assignment_doc.py      # `assignments` document schema
 │   │   │  
 │   │   ├── services                       # Core application logic (reusable functions)
 │   │   │   ├── auth_service.py            # Token creation/validation
@@ -92,9 +92,15 @@
 │  
 ├── docs                                   # Project documentation
 │   ├── PROJECT_STRUCTURE.md               # Project Structure
+│   │   # Project Structure
 │   ├── PROJECT_OVERVIEW.md                # Project Overview
 │   ├── SCHEMA_SPEC.md                     # specifications of schemas
 │   └── API_SPEC.md                        # Endpoints specifications 
-│  
+│
+├── docker-data/
+│   ├── mysql/                             # MySQL data persisted here (host:8000)
+│   └── mongo/                             # MongoDB data persisted here (host:8001)
+│
+├── docker-compose.yml
+│
 └── README.md                              # Overview, setup, and usage instructions
-  

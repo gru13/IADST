@@ -1,1 +1,8 @@
-# requirements.txt
+# Python package dependencies
+fastapi
+uvicorn[standard]
+pymysql
+sqlalchemy
+python-dotenv
+pydantic
+motor

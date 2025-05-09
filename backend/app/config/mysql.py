@@ -1,4 +1,7 @@
 # mysql.py
+"""
+SQLAlchemy engine & SessionLocal for MySQL (exposed on 8000).
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv

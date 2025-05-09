@@ -1,0 +1,1 @@
+// Detailed assignment view component

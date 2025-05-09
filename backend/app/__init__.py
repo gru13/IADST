@@ -1,1 +1,3 @@
-# __init__.py
+"""
+Initializes the app package.
+"""
