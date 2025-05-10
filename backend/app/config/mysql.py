@@ -11,15 +11,14 @@ import os
 load_dotenv()
 
 # Access variables
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_NAME = os.getenv("DB_NAME")
+MYSQL_USER = os.getenv("MYSQL_USER")
+MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
+MYSQL_PORT = os.getenv("MYSQL_PORT")
+MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
 
 # SQLAlchemy Database URL
 DATABASE_URL = (
-    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@localhost:{MYSQL_PORT}/{MYSQL_DATABASE}"
 )
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
@@ -27,13 +26,13 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 print("Database URL:", DATABASE_URL)
 
-def get_db():
+def get_mysql_db():
     """Dependency to get a database session."""
-    db = SessionLocal()
+    mysql_db = SessionLocal()
     try:
-        yield db
+        yield mysql_db
     finally:
-        db.close()
+        mysql_db.close()
         
 if __name__ == "__main__":
     # Test the connection

@@ -14,8 +14,6 @@ services:
       - mongo
     volumes:
       - ./backend:/app  # Mount the backend directory into the container (for local development)
-      - ./docker-data/mysql:/var/lib/mysql  # Persist MySQL data
-      - ./docker-data/mongo:/data/db  # Persist MongoDB data
     networks:
       - backend-network
 
@@ -31,6 +29,7 @@ services:
     ports:
       - "8000:3306"  # Exposing MySQL on port 3306 (accessible from host)
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # SQL script to initialize the database
       - ./docker-data/mysql:/var/lib/mysql  # Persistent volume for MySQL data
     networks:
       - backend-network
@@ -66,10 +65,3 @@ networks:
     driver: bridge
   frontend-network:
     driver: bridge
-
-# Volumes for persistent data
-volumes:
-  mysql_data:
-    driver: local
-  mongo_data:
-    driver: local

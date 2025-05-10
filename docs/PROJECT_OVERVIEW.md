@@ -173,3 +173,21 @@ The project uses Docker Compose to orchestrate multiple services, each encapsula
 | **Backend**  | `fastapi-backend`  | `8002:8000`       | FastAPI backend, accessible via `http://localhost:8002` | Depends on: **MySQL**, **Mongo** | `./backend:/app`, `./docker-data/mysql:/var/lib/mysql`, `./docker-data/mongo:/data/db` |
 | **MySQL**    | `mysql-db`         | `8000:3306`       | MySQL database, accessible via `localhost:8000` (host)  | None                             | `./docker-data/mysql:/var/lib/mysql` (persistent MySQL data)                           |
 | **MongoDB**  | `mongo-db`         | `8001:27017`      | MongoDB database, accessible via `localhost:8001` (host)| None                             | `./docker-data/mongo:/data/db` (persistent MongoDB data)                               |
+
+## 🏁 Running Databases Separately for Development
+
+To run MySQL and MongoDB in separate containers for development:
+
+1. Make sure Docker and Docker Compose are installed.
+2. In your project root, run:
+   ```bash
+   docker-compose up -d mysql-db mongo-db
+   ```
+   This will start only the MySQL and MongoDB containers in the background.
+3. MySQL will be available at `localhost:8000` and MongoDB at `localhost:8001`.
+4. To stop them, run:
+   ```bash
+   docker-compose stop mysql-db mongo-db
+   ```
+
+Data will persist in the `./docker-data/mysql` and `./docker-data/mongo` folders.
