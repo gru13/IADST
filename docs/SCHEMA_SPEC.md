@@ -2,61 +2,126 @@
 
 ## 🟦 **MySQL Schema (Relational DB)**
 
+<!--
+MySQL is used for user management and metadata. It stores teachers, students, and metadata for questions, solutions, courses, and assignments. The 'mongoId' fields in MySQL tables reference the corresponding documents in MongoDB collections, enabling a hybrid relational-document data model.
+
+ID Mapping:
+- Teachers: 'teacherId' (MySQL) is referenced in MongoDB 'courses.teacherId'.
+- Students: 'studentRoll' (MySQL) should match 'studentRoll' in MongoDB collections.
+- Questions/Solutions/Courses/Assignments: 'mongoId' fields in MySQL reference the '_id' of MongoDB documents.
+
+Foreign keys in MySQL ensure referential integrity for relational data.
+-->
+
 ```sql
 -- TEACHERS
 CREATE TABLE Teachers (
-    teacherId INT AUTO_INCREMENT PRIMARY KEY,
-    teacherName VARCHAR(255) NOT NULL,
-    teacherEmail VARCHAR(255) UNIQUE NOT NULL
+    teacherId    INT              AUTO_INCREMENT PRIMARY KEY,
+    teacherName  VARCHAR(255)     NOT NULL,
+    teacherEmail VARCHAR(255)     UNIQUE NOT NULL,
+    createdAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- STUDENTS
 CREATE TABLE Students (
-    studentRoll VARCHAR(100) PRIMARY KEY,
-    studentName VARCHAR(255) NOT NULL,
-    studentEmail VARCHAR(255) UNIQUE NOT NULL
+    studentRoll  VARCHAR(100)     PRIMARY KEY,
+    studentName  VARCHAR(255)     NOT NULL,
+    studentEmail VARCHAR(255)     UNIQUE NOT NULL,
+    createdAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- QUESTIONS (only metadata here)
+-- QUESTIONS (metadata only)
 CREATE TABLE Questions (
-    questionId INT AUTO_INCREMENT PRIMARY KEY,
-    mongoId VARCHAR(255) NOT NULL, -- references MongoDB questionTexts._id
-    topicName VARCHAR(255),
-    difficulty VARCHAR(255),
-    marks INT,
-    sourceName VARCHAR(255),
-    sourceHref VARCHAR(255)
+    questionId   INT              AUTO_INCREMENT PRIMARY KEY,
+    mongoId      CHAR(24)         NOT NULL,
+    topicName    VARCHAR(255),
+    difficulty   ENUM('easy','medium','hard'),
+    marks        INT              NOT NULL DEFAULT 0,
+    sourceName   VARCHAR(255),
+    sourceHref   VARCHAR(255),
+    createdAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX (mongoId),
+    INDEX (topicName),
+    INDEX (difficulty)
 );
 
 -- SOLUTIONS (metadata only)
 CREATE TABLE Solutions (
-    solutionId INT AUTO_INCREMENT PRIMARY KEY,
-    questionId INT,
-    teacherId INT,
-    mongoId VARCHAR(255) NOT NULL, -- references MongoDB solutionTexts._id
+    solutionId   INT              AUTO_INCREMENT PRIMARY KEY,
+    questionId   INT              NOT NULL,
+    teacherId    INT              NOT NULL,
+    mongoId      CHAR(24)         NOT NULL,
+    createdAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (questionId) REFERENCES Questions(questionId) ON DELETE CASCADE,
-    FOREIGN KEY (teacherId) REFERENCES Teachers(teacherId) ON DELETE CASCADE
+    FOREIGN KEY (teacherId)  REFERENCES Teachers(teacherId) ON DELETE CASCADE,
+    INDEX (mongoId)
 );
 
--- COURSES (in MongoDB now, but just for reference in case)
+-- COURSES
 CREATE TABLE Courses (
-    courseId INT AUTO_INCREMENT PRIMARY KEY,
-    teacherId INT,
-    FOREIGN KEY (teacherId) REFERENCES Teachers(teacherId) ON DELETE CASCADE
+    courseId     INT              AUTO_INCREMENT PRIMARY KEY,
+    courseName   VARCHAR(255)     NOT NULL,
+    teacherId    INT              NOT NULL,
+    mongoId      CHAR(24)         NOT NULL,
+    createdAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (teacherId) REFERENCES Teachers(teacherId) ON DELETE CASCADE,
+    INDEX (courseId),
+    INDEX (mongoId)
 );
 
--- ASSIGNMENTS (metadata only in MySQL)
+-- ASSIGNMENTS (metadata only)
 CREATE TABLE Assignments (
-    assignmentId INT AUTO_INCREMENT PRIMARY KEY,
-    courseId INT,
-    dueDate TIMESTAMP,
-    FOREIGN KEY (courseId) REFERENCES Courses(courseId) ON DELETE CASCADE
+    assignmentId   INT            AUTO_INCREMENT PRIMARY KEY,
+    assignmentName VARCHAR(255)   NOT NULL,
+    assignmentDesc TEXT            NOT NULL,
+    courseId       INT            NOT NULL,
+    dueDate        DATETIME       NULL,
+    mongoId        CHAR(24)       NOT NULL,
+    createdAt      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (courseId) REFERENCES Courses(courseId) ON DELETE CASCADE,
+    INDEX (dueDate),
+    INDEX (mongoId)
+);
+
+-- STUDENT–ASSIGNMENT MAPPINGS
+CREATE TABLE AssignmentSubmissions (
+    submissionId    INT            AUTO_INCREMENT PRIMARY KEY,
+    assignmentId    INT            NOT NULL,
+    studentRoll     VARCHAR(100)   NOT NULL,
+    questionMongoId CHAR(24)       NOT NULL,
+    createdAt       TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX (assignmentId),
+    INDEX (studentRoll),
+    FOREIGN KEY (assignmentId) REFERENCES Assignments(assignmentId) ON DELETE CASCADE,
+    FOREIGN KEY (studentRoll)    REFERENCES Students(studentRoll) ON DELETE CASCADE
 );
 ```
 
 ---
 
 ## 🟩 **MongoDB Collections**
+
+<!--
+MongoDB is used for storing document-based data, such as course-student mappings, assignment details, question and solution content. The '_id' fields in MongoDB are referenced by 'mongoId' fields in MySQL for cross-database connectivity.
+
+- 'courses' collection: Stores course details, including teacher, students, and assignments.
+- 'assignments' collection: Stores assignment metadata, difficulty distribution, and per-student assigned questions.
+- 'questionTexts' collection: Stores the actual question content.
+- 'solutionTexts' collection: Stores the actual solution content.
+
+Data Flow:
+- Teachers create courses (MySQL), which are detailed in MongoDB ('courses').
+- Courses have assignments (MySQL metadata, MongoDB for details and mapping).
+- Assignments are linked to students and questions in MongoDB.
+- Questions and solutions have metadata in MySQL, but their content is in MongoDB.
+- Students are assigned assignments and questions via MongoDB collections.
+-->
 
 ### `courses` Collection
 
@@ -66,16 +131,9 @@ This collection stores course details, including references to students and assi
 {
   "_id": "ObjectId('...')",
   "courseName": "Course 101",
-  "teacherId": "teacherId_value",  // Reference to the teacher (could be an ObjectId from Teachers collection)
-  "students": [
-    "studentId1",
-    "studentId2",
-    "studentId3"
-  ],
-  "assignments": [
-    "assignmentId1",
-    "assignmentId2"
-  ]
+  "teacherId": "1212", // Reference to the teacher (could be an ObjectId from Teachers collection)
+  "students": ["studentRoll1", "studentRoll2", "studentRoll3"],
+  "assignments": ["ObjectId('...')", "ObjectId('...')"]
 }
 ```
 
@@ -86,73 +144,36 @@ Stores assignment metadata and references the questions related to the assignmen
 ```json
 {
   "_id": "ObjectId('...')",
-  "assignmentId": "123456",  // Optional field for tracking purposes
-  "teacherId": "teacherId123",  // Teacher who created the assignment
-  "courseId": "courseId456",  // Course associated with the assignment
-  "topic": "Mathematics",  // The subject or topic of the assignment
-  "dueDate": "2025-05-30T23:59:59Z",  // Due date for the assignment
-  "difficultyDistribution": {  // The difficulty level breakdown
+  "difficultyDistribution": {
+    // The difficulty level breakdown
     "easy": 5,
     "medium": 3,
     "hard": 2
   },
-  "totalMarks": 50,  // Total marks for the assignment
-  "questionIds": [  // List of question IDs selected for the assignment
-    "ObjectId('...')", 
-    "ObjectId('...')", 
-    "ObjectId('...')"
-  ],
-  "students": [  // List of students assigned this assignment
+  "totalMarks": 50, // Total marks for the assignment
+  "students": [
+    // List of students assigned this assignment
     {
-      "studentId": "studentId789",
+      "studentRoll": "studentRoll789",
       "assignedQuestions": [
-        "ObjectId('...')",  // Question 1 (Easy)
-        "ObjectId('...')",  // Question 2 (Medium)
-        "ObjectId('...')"   // Question 3 (Hard)
+        "ObjectId('...')", // Question 1 (Easy)
+        "ObjectId('...')", // Question 2 (Medium)
+        "ObjectId('...')" // Question 3 (Hard)
       ]
     },
     {
-      "studentId": "studentId890",
+      "studentRoll": "studentRoll890",
       "assignedQuestions": [
-        "ObjectId('...')",  // Question 1 (Medium)
-        "ObjectId('...')",  // Question 2 (Hard)
-        "ObjectId('...')"   // Question 3 (Easy)
+        "ObjectId('...')", // Question 1 (Medium)
+        "ObjectId('...')", // Question 2 (Hard)
+        "ObjectId('...')" // Question 3 (Easy)
       ]
     }
   ]
 }
-
 ```
 
-#### Explanation of Fields:
-
-1. **\_id**: MongoDB's automatically generated unique identifier for each document in the collection.
-2. **assignmentId**: A unique ID for the assignment (optional but useful for tracking).
-3. **teacherId**: The ID of the teacher who created the assignment.
-4. **courseId**: The ID of the course associated with the assignment.
-5. **topic**: The subject or topic for the assignment (e.g., Mathematics, Programming, etc.).
-6. **dueDate**: The date and time by which the assignment is due, in ISO 8601 format.
-7. **difficultyDistribution**: A breakdown of the number of easy, medium, and hard questions in the assignment. This is used to define how many questions of each difficulty level should be assigned.
-8. **totalMarks**: The total marks for the assignment, calculated based on the difficulty levels of the questions (easy = 5, medium = 10, hard = 20).
-9. **questionIds**: A list of IDs referring to questions selected for this assignment.
-10. **students**: A list of students who have been assigned this assignment, with each student having:
-
-    * **studentId**: The ID of the student.
-    * **assignedQuestions**: A list of question IDs that have been assigned to the student.
-
-##### Example of Marks Calculation:
-
-* **Easy Question**: 5 marks
-* **Medium Question**: 10 marks
-* **Hard Question**: 20 marks
-
-For each student:
-
-* If a student has 1 easy, 1 medium, and 1 hard question, their total marks will be:
-  `(1 * 5) + (1 * 10) + (1 * 20) = 35 marks`
-
 ---
-
 
 ### `questionTexts` Collection
 
@@ -177,23 +198,8 @@ Stores solution details like code and explanation for the questions.
 ```json
 {
   "_id": "ObjectId('...')",
+  "questionId": "5a1d4d4",
   "answerCode": "def add(a, b): return a + b",
   "explanation": "This Python function adds two integers."
 }
 ```
-
----
-
-### ✅ **Final Summary**
-
-| **Component**                               | **Stored In** |
-| ------------------------------------------- | ------------- |
-| Users (teachers, students), assignments     | MySQL         |
-| Course-student mapping                      | MongoDB       |
-| Assignment metadata and question details    | MongoDB       |
-| Question content (description, constraints) | MongoDB       |
-| Solution metadata (who answered what)       | MySQL         |
-| Solution content (code, explanation)        | MongoDB       |
-
-
-
