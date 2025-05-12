@@ -9,12 +9,12 @@
 │   │   │  
 │   │   ├── routers                        # Route definitions mapping URLs to controllers
 │   │   │   ├── auth.py                    # `/auth/login`, `/auth/logout` endpoints
-│   │   │   ├── admin.py                   # `/admin/*` endpoints for user/class management
+│   │   │   ├── admin.py                   # `/admin/*` endpoints for user/course management
 │   │   │   └── teacher.py                 # `/teacher/*` endpoints for question & assignment flows
 │   │   │  
 │   │   ├── controllers                    # Business‑logic layer called by routers
 │   │   │   ├── auth_controller.py         # Handles authentication logic
-│   │   │   ├── admin_controller.py        # CRUD for teachers, students, classes
+│   │   │   ├── admin_controller.py        # CRUD for teachers, students, courses
 │   │   │   └── teacher_controller.py      # Question & assignment operations
 │   │   │  
 │   │   ├── models                         # Data schemas and ORM/ODM definitions
@@ -28,7 +28,7 @@
 │   │   │   └── mongo                      # Pydantic or ODMantic schemas for NoSQL collections
 │   │   │       ├── question_text.py       # `questionTexts` document schema
 │   │   │       ├── solution_text.py       # `solutionTexts` document schema
-│   │   │       ├── class_doc.py           # `classes` document schema
+│   │   │       ├── course_doc.py          # `courses` document schema
 │   │   │       └── assignment_doc.py      # `assignments` document schema
 │   │   │  
 │   │   ├── services                       # Core application logic (reusable functions)
@@ -54,10 +54,10 @@
 │   │   │   ├── admin                      # Admin‑role widgets
 │   │   │   │   ├── TeacherForm.jsx        # Create/edit teacher form
 │   │   │   │   ├── StudentForm.jsx        # Create/edit student form
-│   │   │   │   ├── ClassForm.jsx          # Create/edit class form
+│   │   │   │   ├── CourseForm.jsx         # Create/edit course form
 │   │   │   │   ├── TeacherList.jsx        # Table of teachers with actions
 │   │   │   │   ├── StudentList.jsx        # Table of students with actions
-│   │   │   │   └── ClassList.jsx          # Table of classes and memberships
+│   │   │   │   └── CourseList.jsx         # Table of courses and memberships
 │   │   │   │  
 │   │   │   └── teacher                    # Teacher‑role widgets
 │   │   │       ├── QuestionForm.jsx       # Create/edit question form

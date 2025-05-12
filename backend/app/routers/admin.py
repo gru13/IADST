@@ -3,7 +3,7 @@
 from fastapi import APIRouter
 
 """
-/admin/* endpoints for user/class management.
+/admin/* endpoints for user/course management.
 """
 
 router = APIRouter()

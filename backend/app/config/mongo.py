@@ -20,7 +20,7 @@ db = client[MONGO_DB]
 # Expose collection handles
 question_texts = db["questionTexts"]
 solution_texts = db["solutionTexts"]
-classes = db["classes"]
+courses = db["courses"]
 assignments = db["assignments"]
 
 # Dependency for FastAPI routes

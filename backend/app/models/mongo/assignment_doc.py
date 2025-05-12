@@ -2,5 +2,5 @@
 # assignment_doc.py
 
 """
-Pydantic/ODMantic schema for assignments document.
+Pydantic/ODMantic schema for assignments document (course-based).
 """

@@ -2,5 +2,5 @@
 # SQLAlchemy model for QuestionMeta table
 
 """
-SQLAlchemy model for QuestionMeta metadata.
+SQLAlchemy model for QuestionMeta metadata related to courses.
 """

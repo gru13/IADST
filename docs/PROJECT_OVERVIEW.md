@@ -14,7 +14,7 @@ Build a hybrid system that enables teachers to efficiently manage a coding quest
 
 ## **Key Stakeholders:**  
   
-* **Admin:** Sets up the system with teacher, class, and student records.
+* **Admin:** Sets up the system with teacher, course, and student records.
 * **Teacher:** Manages questions and assignments, and initiates assignment distribution.
 * **Student:** Does not interact with the system directly; receives personalized assignments via email.
 
@@ -28,9 +28,9 @@ Build a hybrid system that enables teachers to efficiently manage a coding quest
 
   * Teachers
   * Students
-  * Classes
-* Assign students to classes.
-* Assign teachers to classes.
+  * Courses
+* Assign students to courses.
+* Assign teachers to courses.
 
 ---
 
@@ -55,12 +55,12 @@ Build a hybrid system that enables teachers to efficiently manage a coding quest
   * Topic
   * Total number of questions
   * Number per difficulty (e.g., 2 easy, 2 medium, 1 hard)
-* For a given class, pseudo-randomly assign different sets of questions to each student based on:
+* For a given course, pseudo-randomly assign different sets of questions to each student based on:
 
   * `timestamp`
   * `teacherId`
-  * `studentId`
-  * `classId`
+  * `rollNumber`
+  * `courseId`
 * The system:
 
   * Shows a preview table: students with their assigned question sets.
@@ -82,12 +82,12 @@ Used for flexible storage of complex text content.
 * **solutionTexts**:
 
   * `answerCode`, `explanation`
-* **classes**:
+* **courses**:
 
-  * `classId`, `teacherId`, `students`: `[studentId, ...]`
+  * `courseId`, `teacherId`, `students`: `[rollNumber, ...]`
 * **assignments**:
 
-  * `assignmentId`, `classId`, `dueDate`, metadata like topic, counts, questionMap
+  * `assignmentId`, `courseId`, `dueDate`, metadata like topic, counts, questionMap
 
 ---
 
@@ -95,7 +95,7 @@ Used for flexible storage of complex text content.
 
 Used for managing structured and relational data.
 
-* **Teachers**, **Students**
+* **Teachers**, **Students**: Identified by `rollNumber` (string, e.g., roll number), not integer ID.
 * **Questions** (metadata only):
 
   * Includes topic, difficulty, source info, and MongoDB reference.
@@ -104,7 +104,7 @@ Used for managing structured and relational data.
   * Includes MongoDB reference and question ID.
 * **AssignmentQuestions**:
 
-  * Mapping between assignment and questions.
+  * Mapping between assignment and questions (uses `rollNumber` for students).
 
 ---
 
@@ -112,7 +112,7 @@ Used for managing structured and relational data.
 
 | Role    | Access Description                                       |
 | ------- | -------------------------------------------------------- |
-| Admin   | CRUD for teachers, students, classes                     |
+| Admin   | CRUD for teachers, students, courses                     |
 | Teacher | CRUD for questions and assignments                       |
 | Student | Only receives personalized email (no login or UI access) |
 
@@ -135,17 +135,18 @@ Used for managing structured and relational data.
 | -------------------------------------- | --------- | --------------- |
 | **Create Teacher**                     | ✅         | ❌               |
 | **Create Student (in DB)**             | ✅         | ❌               |
-| **Create Class**                       | ✅         | ❌               |
-| **Assign Teacher to Class**            | ✅         | ❌               |
-| **Assign Students to Class**           | ✅         | ❌               |
-| **View Teachers / Students / Classes** | ✅         | ✅ (own classes) |
+| **Student Identifier**                 | `rollNumber` (string) |                 |
+| **Create Course**                      | ✅         | ❌               |
+| **Assign Teacher to Course**           | ✅         | ❌               |
+| **Assign Students to Course**          | ✅         | ❌               |
+| **View Teachers / Students / Courses** | ✅         | ✅ (own courses) |
 |                                        |           |                 |
 | **Create Question**                    | ❌         | ✅               |
 | **Read/View Questions**                | ❌         | ✅ (own)         |
 | **Update Question**                    | ❌         | ✅ (own)         |
 | **Delete Question**                    | ❌         | ✅ (own)         |
 |                                        |           |                 |
-| **Create Assignment**                  | ❌         | ✅ (own classes) |
+| **Create Assignment**                  | ❌         | ✅ (own courses) |
 | **Read/View Assignment**               | ✅ (all)   | ✅ (own)         |
 | **Update Assignment**                  | ❌         | ✅ (own)         |
 | **Delete Assignment**                  | ❌         | ✅ (own)         |
@@ -154,10 +155,10 @@ Used for managing structured and relational data.
 
 ### 🔎 Notes
 
-* **Students are passive**: Their data is managed by Admin for assignment delivery purposes (e.g., name + email).
+* **Students are passive**: Identified by `rollNumber` (string).
 * **No login or interface** for students is required at this stage.
 * **Future functionality** like submission or performance tracking can revisit student interactivity.
-* **No need for a separate teacher login**: Each teacher is associated with their class(es) and can only manage their own questions and assignments.
+* **No need for a separate teacher login**: Each teacher is associated with their course(s) and can only manage their own questions and assignments.
 
 ---
 

@@ -22,7 +22,6 @@
 
 #### 👨‍🎓 Student Management
 
-
 | Endpoint                      | Router File        | Controller Function                 | Service Layer | Description                            |
 | ----------------------------- | ------------------ | ----------------------------------- | ------------- | -------------------------------------- |
 | `POST /admin/students`        | `routers/admin.py` | `admin_controller.create_student()` | —             | Add a new student.                     |
@@ -30,17 +29,17 @@
 | `PUT /admin/students/{id}`    | `routers/admin.py` | `admin_controller.update_student()` | —             | Update details of an existing student. |
 | `DELETE /admin/students/{id}` | `routers/admin.py` | `admin_controller.delete_student()` | —             | Remove a student from the system.      |
 
-#### 📚 Class Management
+#### 📚 Course Management
 
 | Endpoint                                          | Router File        | Controller Function                     | Service Layer | Description                               |
 | ------------------------------------------------- | ------------------ | --------------------------------------- | ------------- | ----------------------------------------- |
-| `POST /admin/classes`                             | `routers/admin.py` | `admin_controller.create_class()`       | —             | Create a new class.                       |
-| `GET /admin/classes`                              | `routers/admin.py` | `admin_controller.get_classes()`        | —             | Retrieve a list of all classes.           |
-| `PUT /admin/classes/{id}`                         | `routers/admin.py` | `admin_controller.update_class()`       | —             | Update class details.                     |
-| `DELETE /admin/classes/{id}`                      | `routers/admin.py` | `admin_controller.delete_class()`       | —             | Delete a class.                           |
-| `POST /admin/classes/{id}/students`               | `routers/admin.py` | `admin_controller.assign_students()`    | —             | Assign students to a class.               |
-| `GET /admin/classes/{id}/students`                | `routers/admin.py` | `admin_controller.get_class_students()` | —             | Get list of students assigned to a class. |
-| `DELETE /admin/classes/{id}/students/{studentId}` | `routers/admin.py` | `admin_controller.remove_student()`     | —             | Remove a specific student from a class.   |
+| `POST /admin/courses`                             | `routers/admin.py` | `admin_controller.create_course()`      | —             | Create a new course.                      |
+| `GET /admin/courses`                              | `routers/admin.py` | `admin_controller.get_courses()`        | —             | Retrieve a list of all courses.           |
+| `PUT /admin/courses/{id}`                         | `routers/admin.py` | `admin_controller.update_course()`      | —             | Update course details.                    |
+| `DELETE /admin/courses/{id}`                      | `routers/admin.py` | `admin_controller.delete_course()`      | —             | Delete a course.                          |
+| `POST /admin/courses/{id}/students`               | `routers/admin.py` | `admin_controller.assign_students()`    | —             | Assign students to a course.              |
+| `GET /admin/courses/{id}/students`                | `routers/admin.py` | `admin_controller.get_course_students()`| —             | Get list of students assigned to a course.|
+| `DELETE /admin/courses/{id}/students/{studentId}` | `routers/admin.py` | `admin_controller.remove_student()`     | —             | Remove a specific student from a course.  |
 
 ---
 
@@ -69,7 +68,7 @@
 
 | Endpoint                                       | Router File          | Controller                               | Service                 | Description                                                       |
 | ---------------------------------------------- | -------------------- | ---------------------------------------- | ----------------------- | ----------------------------------------------------------------- |
-| `POST /teacher/assignments`                    | `routers/teacher.py` | `teacher_controller.create_assignment()` | `assignment_service.py` | Create a new assignment by selecting questions and class targets. |
+| `POST /teacher/assignments`                    | `routers/teacher.py` | `teacher_controller.create_assignment()` | `assignment_service.py` | Create a new assignment by selecting questions and course targets. |
 | `GET /teacher/assignments`                     | `routers/teacher.py` | `teacher_controller.list_assignments()`  | `assignment_service.py` | Get a list of all created assignments.                            |
 | `GET /teacher/assignments/{id}`                | `routers/teacher.py` | `teacher_controller.get_assignment()`    | —                       | Retrieve details of a specific assignment.                        |
 | `DELETE /teacher/assignments/{id}`             | `routers/teacher.py` | `teacher_controller.delete_assignment()` | —                       | Delete a specific assignment.                                     |
@@ -88,7 +87,7 @@
 | `GET /sources`              | `routers/teacher.py` | `teacher_controller.get_sources()`      | —             | Get list of sources  (leetcode, hackerrank, codechef).     |
 | `GET /topics`               | `routers/teacher.py` | `teacher_controller.get_topics()`       | —             | Get list of predefined topics to tag questions.            |
 | `GET /difficulties`         | `routers/teacher.py` | `teacher_controller.get_difficulties()` | —             | Get supported difficulty levels (easy, medium, hard).      |
-| `GET /teacher/{id}/classes` | `routers/teacher.py` | `teacher_controller.get_my_classes()`   | —             | Get classes assigned to the logged-in teacher.             |
+| `GET /teacher/{id}/courses` | `routers/teacher.py` | `teacher_controller.get_my_courses()`   | —             | Get courses assigned to the logged-in teacher.             |
 
 ---
 
@@ -99,8 +98,8 @@
 | **Authentication**                      | `/auth/login`, `/auth/logout`                                                                                                                   |
 | **Admin: Teacher Management**           | `/admin/teachers`, `/admin/teachers/{teacherId}`                                                                                                |
 | **Admin: Student Management**           | `/admin/students`, `/admin/students/{studentId}`                                                                                                |
-| **Admin: Class Management**             | `/admin/classes`, `/admin/classes/{classId}`                                                                                                    |
-| **Admin: Assign Students to Class**     | `/admin/classes/{classId}/students`, `/admin/classes/{classId}/students/{studentId}`                                                            |
+| **Admin: Course Management**            | `/admin/courses`, `/admin/courses/{courseId}`                                                                                                   |
+| **Admin: Assign Students to Course**    | `/admin/courses/{courseId}/students`, `/admin/courses/{courseId}/students/{studentId}`                                                          |
 | **Teacher: Question Bank Management**   | `/teacher/questions`, `/teacher/questions/{questionId}`                                                                                         |
 | **Teacher: Solution Management**        | `/teacher/questions/{questionId}/solution`                                                                                                      |
 | **Teacher: Assignment CRUD**            | `/teacher/assignments`, `/teacher/assignments/{assignmentId}`                                                                                   |
@@ -109,6 +108,6 @@
 | **Utility: Source Name Retrieval**      | `/sources`                                                                                                                                      |
 | **Utility: Topic Retrieval**            | `/topics`                                                                                                                                       |
 | **Utility: Difficulty Retrieval**       | `/difficulties`                                                                                                                                 |
-| **Utility: Teacher Classes**            | `/teacher/{teacherId}/classes`                                                                                                                  |
+| **Utility: Teacher Courses**            | `/teacher/{teacherId}/courses`                                                                                                                  |
 
 ---

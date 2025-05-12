@@ -12,7 +12,7 @@ CREATE TABLE Teachers (
 
 -- STUDENTS
 CREATE TABLE Students (
-    studentId INT AUTO_INCREMENT PRIMARY KEY,
+    studentRoll VARCHAR(100) PRIMARY KEY,
     studentName VARCHAR(255) NOT NULL,
     studentEmail VARCHAR(255) UNIQUE NOT NULL
 );
@@ -38,9 +38,9 @@ CREATE TABLE Solutions (
     FOREIGN KEY (teacherId) REFERENCES Teachers(teacherId) ON DELETE CASCADE
 );
 
--- CLASSES (in MongoDB now, but just for reference in case)
-CREATE TABLE Classes (
-    classId INT AUTO_INCREMENT PRIMARY KEY,
+-- COURSES (in MongoDB now, but just for reference in case)
+CREATE TABLE Courses (
+    courseId INT AUTO_INCREMENT PRIMARY KEY,
     teacherId INT,
     FOREIGN KEY (teacherId) REFERENCES Teachers(teacherId) ON DELETE CASCADE
 );
@@ -48,9 +48,9 @@ CREATE TABLE Classes (
 -- ASSIGNMENTS (metadata only in MySQL)
 CREATE TABLE Assignments (
     assignmentId INT AUTO_INCREMENT PRIMARY KEY,
-    classId INT,
+    courseId INT,
     dueDate TIMESTAMP,
-    FOREIGN KEY (classId) REFERENCES Classes(classId) ON DELETE CASCADE
+    FOREIGN KEY (courseId) REFERENCES Courses(courseId) ON DELETE CASCADE
 );
 ```
 
@@ -58,14 +58,14 @@ CREATE TABLE Assignments (
 
 ## 🟩 **MongoDB Collections**
 
-### `classes` Collection
+### `courses` Collection
 
-This collection stores class details, including references to students and assignments.
+This collection stores course details, including references to students and assignments.
 
 ```json
 {
   "_id": "ObjectId('...')",
-  "className": "Class 101",
+  "courseName": "Course 101",
   "teacherId": "teacherId_value",  // Reference to the teacher (could be an ObjectId from Teachers collection)
   "students": [
     "studentId1",
@@ -88,7 +88,7 @@ Stores assignment metadata and references the questions related to the assignmen
   "_id": "ObjectId('...')",
   "assignmentId": "123456",  // Optional field for tracking purposes
   "teacherId": "teacherId123",  // Teacher who created the assignment
-  "classId": "classId456",  // Class associated with the assignment
+  "courseId": "courseId456",  // Course associated with the assignment
   "topic": "Mathematics",  // The subject or topic of the assignment
   "dueDate": "2025-05-30T23:59:59Z",  // Due date for the assignment
   "difficultyDistribution": {  // The difficulty level breakdown
@@ -129,7 +129,7 @@ Stores assignment metadata and references the questions related to the assignmen
 1. **\_id**: MongoDB's automatically generated unique identifier for each document in the collection.
 2. **assignmentId**: A unique ID for the assignment (optional but useful for tracking).
 3. **teacherId**: The ID of the teacher who created the assignment.
-4. **classId**: The ID of the class associated with the assignment.
+4. **courseId**: The ID of the course associated with the assignment.
 5. **topic**: The subject or topic for the assignment (e.g., Mathematics, Programming, etc.).
 6. **dueDate**: The date and time by which the assignment is due, in ISO 8601 format.
 7. **difficultyDistribution**: A breakdown of the number of easy, medium, and hard questions in the assignment. This is used to define how many questions of each difficulty level should be assigned.
@@ -189,7 +189,7 @@ Stores solution details like code and explanation for the questions.
 | **Component**                               | **Stored In** |
 | ------------------------------------------- | ------------- |
 | Users (teachers, students), assignments     | MySQL         |
-| Class-student mapping                       | MongoDB       |
+| Course-student mapping                      | MongoDB       |
 | Assignment metadata and question details    | MongoDB       |
 | Question content (description, constraints) | MongoDB       |
 | Solution metadata (who answered what)       | MySQL         |
