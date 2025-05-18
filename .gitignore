@@ -2,3 +2,4 @@
 */node_modules
 *.log   
 docker-data
+*/__pycache__

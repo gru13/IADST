@@ -5,7 +5,6 @@ Motor (async) client & MongoDB collection handles (exposed on 8001).
 """
 
 from motor.motor_asyncio import AsyncIOMotorClient
-from fastapi import Depends
 import os
 
 MONGO_HOST = os.getenv("MONGO_HOST", "localhost")

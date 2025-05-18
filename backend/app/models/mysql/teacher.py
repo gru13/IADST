@@ -3,20 +3,19 @@
 SQLAlchemy model for Teacher table.
 """
 from sqlalchemy import Column, Integer, String 
-from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+from app.models.mysql.base import Base
 
 
 class Teacher(Base):
     __tablename__ = "teachers" 
     
-    teacherID: Integer = Column(
+    teacherID = Column(
         name="teacherId", type_=Integer, primary_key=True, autoincrement=True
     )
-    teacherName: String(255) = Column(
+    teacherName = Column(
         name="teacherName", type_=String(50), nullable=False
     )
-    teacherEmail: String(255) = Column(
+    teacherEmail = Column(
         name="teacherEmail", type_=String(50), unique=True, nullable=False,
     )
