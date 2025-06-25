@@ -8,13 +8,13 @@
 
 ## **Objective:**  
   
-Build a hybrid system that enables teachers to efficiently manage a coding question bank, create personalized assignments, and distribute them to students via email—automatically and pseudo-randomly.
+Build a hybrid system that enables teachers to efficiently manage a coding question bank, create personalized assignments, and distribute them to students via email—automatically and pseudo-randomly. All data is stored in MongoDB collections (NoSQL).
   
 ---
 
 ## **Key Stakeholders:**  
   
-* **Admin:** Sets up the system with teacher, course, and student records.
+* **Admin:** Sets up the system with teacher, course, and student records (all stored in MongoDB).
 * **Teacher:** Manages questions and assignments, and initiates assignment distribution.
 * **Student:** Does not interact with the system directly; receives personalized assignments via email.
 
@@ -25,12 +25,11 @@ Build a hybrid system that enables teachers to efficiently manage a coding quest
 ### 1. **Admin Panel:**
 
 * Add, update, and delete:
-
-  * Teachers
-  * Students
-  * Courses
-* Assign students to courses.
-* Assign teachers to courses.
+  * Teachers (MongoDB: `teachers` collection)
+  * Students (MongoDB: `students` collection)
+  * Courses (MongoDB: `courses` collection)
+* Assign students to courses (update `courses.students` array in MongoDB).
+* Assign teachers to courses (update `courses.teacherId` in MongoDB).
 
 ---
 
@@ -46,7 +45,7 @@ Build a hybrid system that enables teachers to efficiently manage a coding quest
     * Difficulty
     * Marks
     * Source info
-    * MongoDB-stored question text (description, input/output format, constraints, sample I/O)
+    * MongoDB-stored question text (description, input/output format, constraints, sample I/O) in `questionTexts` collection
 
 #### **B. Assignment Management**
 
@@ -57,16 +56,25 @@ Build a hybrid system that enables teachers to efficiently manage a coding quest
   * Number per difficulty (e.g., 2 easy, 2 medium, 1 hard)
 * For a given course, pseudo-randomly assign different sets of questions to each student based on:
 
-  * `timestamp`
-  * `teacherId`
-  * `rollNumber`
-  * `courseId`
-* The system:
+  * `timestamp` (used as a seed for randomization)
+  * Student's ObjectId
+* Assignment metadata and per-student assignments are stored in the `assignments` collection in MongoDB.
 
-  * Shows a preview table: students with their assigned question sets.
-  * Allows **regeneration** if the teacher wants a new random set.
-  * Generates **individual PDFs** per student with their question set.
-  * Sends assignment PDF to each student using a **faculty email template**.
+---
+
+### 3. **Distribution & Email**
+
+* Generate assignment PDFs for each student (assignment data from MongoDB).
+* Email assignments to students using their email addresses from the `students` collection.
+
+---
+
+## **Data Flow (MongoDB-centric):**
+
+1. Admin creates teachers, students, and courses (all documents in MongoDB).
+2. Teachers create questions and assignments (documents in `questionTexts` and `assignments`).
+3. Assignments are distributed to students (linked by ObjectId in MongoDB).
+4. All CRUD and lookup operations are performed on MongoDB collections.
 
 ---
 
@@ -74,37 +82,20 @@ Build a hybrid system that enables teachers to efficiently manage a coding quest
 
 ### 🟩 **MongoDB (NoSQL)**
 
-Used for flexible storage of complex text content.
+All data is now stored and managed using MongoDB.
 
+* **teachers**:
+  * `name`, `email`, `createdAt`, `updatedAt`
+* **students**:
+  * `rollNumber`, `name`, `email`, `createdAt`, `updatedAt`
 * **questionTexts**:
-
   * `description`, `inputFormat`, `outputFormat`, `constraints`, `sampleInputs`, `sampleOutputs`
 * **solutionTexts**:
-
   * `answerCode`, `explanation`
 * **courses**:
-
-  * `courseId`, `teacherId`, `students`: `[rollNumber, ...]`
+  * `courseName`, `teacherId`, `students` (array of ObjectId), `assignments`
 * **assignments**:
-
-  * `assignmentId`, `courseId`, `dueDate`, metadata like topic, counts, questionMap
-
----
-
-### 🟦 **MySQL (SQL/RDBMS)**
-
-Used for managing structured and relational data.
-
-* **Teachers**, **Students**: Identified by `rollNumber` (string, e.g., roll number), not integer ID.
-* **Questions** (metadata only):
-
-  * Includes topic, difficulty, source info, and MongoDB reference.
-* **Solutions** (metadata):
-
-  * Includes MongoDB reference and question ID.
-* **AssignmentQuestions**:
-
-  * Mapping between assignment and questions (uses `rollNumber` for students).
+  * `name`, `description`, `dueDate`, `courseId`, `difficultyDistribution`, `totalMarks`, `students` (mapping), `createdAt`, `updatedAt`
 
 ---
 
@@ -171,24 +162,23 @@ The project uses Docker Compose to orchestrate multiple services, each encapsula
 | **Service**  | **Container Name** | **Exposed Ports** | **Description**                                         | **Dependencies**                 | **Volumes**                                                                            |
 | ------------ | ------------------ | ----------------- | ------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- |
 | **Frontend** | `react-frontend`   | `8003:3000`       | React frontend, accessible via `http://localhost:8003`  | Depends on: **Backend**          | `./frontend:/app` (live reloading during development)                                  |
-| **Backend**  | `fastapi-backend`  | `8002:8000`       | FastAPI backend, accessible via `http://localhost:8002` | Depends on: **MySQL**, **Mongo** | `./backend:/app`, `./docker-data/mysql:/var/lib/mysql`, `./docker-data/mongo:/data/db` |
-| **MySQL**    | `mysql-db`         | `8000:3306`       | MySQL database, accessible via `localhost:8000` (host)  | None                             | `./docker-data/mysql:/var/lib/mysql` (persistent MySQL data)                           |
+| **Backend**  | `spring-backend`   | `8002:8080`       | Java Spring Boot backend, accessible via `http://localhost:8002` | Depends on: **Mongo** | `./backend:/app`, `./docker-data/mongo:/data/db` |
 | **MongoDB**  | `mongo-db`         | `8001:27017`      | MongoDB database, accessible via `localhost:8001` (host)| None                             | `./docker-data/mongo:/data/db` (persistent MongoDB data)                               |
 
-## 🏁 Running Databases Separately for Development
+## 🏁 Running Database Separately for Development
 
-To run MySQL and MongoDB in separate containers for development:
+To run MongoDB in a separate container for development:
 
 1. Make sure Docker and Docker Compose are installed.
 2. In your project root, run:
    ```bash
-   docker-compose up -d mysql-db mongo-db
+   docker-compose up -d mongo-db
    ```
-   This will start only the MySQL and MongoDB containers in the background.
-3. MySQL will be available at `localhost:8000` and MongoDB at `localhost:8001`.
-4. To stop them, run:
+   This will start only the MongoDB container in the background.
+3. MongoDB will be available at `localhost:8001`.
+4. To stop it, run:
    ```bash
-   docker-compose stop mysql-db mongo-db
+   docker-compose stop mongo-db
    ```
 
-Data will persist in the `./docker-data/mysql` and `./docker-data/mongo` folders.
+Data will persist in the `./docker-data/mongo` folder.

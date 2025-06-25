@@ -2,10 +2,10 @@
 
 ### ✅ 1. **Authentication APIs**
 
-| Endpoint            | Router File       | Controller                 | Service           | Description                              |
-| ------------------- | ----------------- | -------------------------- | ----------------- | ---------------------------------------- |
-| `POST /auth/login`  | `routers/auth.py` | `auth_controller.login()`  | `auth_service.py` | Authenticates a user and returns tokens. |
-| `POST /auth/logout` | `routers/auth.py` | `auth_controller.logout()` | —                 | Logs out a user and invalidates tokens.  |
+| Endpoint            | Controller Class         | Service Class         | Description                              |
+| ------------------- | ----------------------- | --------------------- | ---------------------------------------- |
+| `POST /auth/login`  | `AuthController.java`   | `AuthService.java`    | Authenticates a user and returns tokens. |
+| `POST /auth/logout` | `AuthController.java`   | —                     | Logs out a user and invalidates tokens.  |
 
 ---
 
@@ -13,33 +13,33 @@
 
 #### 👤 Teacher Management
 
-| Endpoint                      | Router File        | Controller Function                 | Service Layer | Description                            |
-| ----------------------------- | ------------------ | ----------------------------------- | ------------- | -------------------------------------- |
-| `POST /admin/teachers`        | `routers/admin.py` | `admin_controller.create_teacher()` | —             | Add a new teacher to the system.       |
-| `GET /admin/teachers`         | `routers/admin.py` | `admin_controller.get_teachers()`   | —             | Retrieve a list of all teachers.       |
-| `PUT /admin/teachers/{id}`    | `routers/admin.py` | `admin_controller.update_teacher()` | —             | Update details of an existing teacher. |
-| `DELETE /admin/teachers/{id}` | `routers/admin.py` | `admin_controller.delete_teacher()` | —             | Remove a teacher from the system.      |
+| Endpoint                      | Controller Class         | Service Class         | Description                            |
+| ----------------------------- | ----------------------- | --------------------- | -------------------------------------- |
+| `POST /admin/teachers`        | `AdminController.java`   | —                     | Add a new teacher to the system (MongoDB: `teachers`).       |
+| `GET /admin/teachers`         | `AdminController.java`   | —                     | Retrieve a list of all teachers (MongoDB: `teachers`).       |
+| `PUT /admin/teachers/{id}`    | `AdminController.java`   | —                     | Update details of an existing teacher (MongoDB: `teachers`). |
+| `DELETE /admin/teachers/{id}` | `AdminController.java`   | —                     | Remove a teacher from the system (MongoDB: `teachers`).      |
 
 #### 👨‍🎓 Student Management
 
-| Endpoint                      | Router File        | Controller Function                 | Service Layer | Description                            |
-| ----------------------------- | ------------------ | ----------------------------------- | ------------- | -------------------------------------- |
-| `POST /admin/students`        | `routers/admin.py` | `admin_controller.create_student()` | —             | Add a new student.                     |
-| `GET /admin/students`         | `routers/admin.py` | `admin_controller.get_students()`   | —             | Retrieve a list of all students.       |
-| `PUT /admin/students/{id}`    | `routers/admin.py` | `admin_controller.update_student()` | —             | Update details of an existing student. |
-| `DELETE /admin/students/{id}` | `routers/admin.py` | `admin_controller.delete_student()` | —             | Remove a student from the system.      |
+| Endpoint                      | Controller Class         | Service Class         | Description                            |
+| ----------------------------- | ----------------------- | --------------------- | -------------------------------------- |
+| `POST /admin/students`        | `AdminController.java`   | —                     | Add a new student (MongoDB: `students`).                     |
+| `GET /admin/students`         | `AdminController.java`   | —                     | Retrieve a list of all students (MongoDB: `students`).       |
+| `PUT /admin/students/{id}`    | `AdminController.java`   | —                     | Update details of an existing student (MongoDB: `students`). |
+| `DELETE /admin/students/{id}` | `AdminController.java`   | —                     | Remove a student from the system (MongoDB: `students`).      |
 
 #### 📚 Course Management
 
-| Endpoint                                          | Router File        | Controller Function                     | Service Layer | Description                               |
-| ------------------------------------------------- | ------------------ | --------------------------------------- | ------------- | ----------------------------------------- |
-| `POST /admin/courses`                             | `routers/admin.py` | `admin_controller.create_course()`      | —             | Create a new course.                      |
-| `GET /admin/courses`                              | `routers/admin.py` | `admin_controller.get_courses()`        | —             | Retrieve a list of all courses.           |
-| `PUT /admin/courses/{id}`                         | `routers/admin.py` | `admin_controller.update_course()`      | —             | Update course details.                    |
-| `DELETE /admin/courses/{id}`                      | `routers/admin.py` | `admin_controller.delete_course()`      | —             | Delete a course.                          |
-| `POST /admin/courses/{id}/students`               | `routers/admin.py` | `admin_controller.assign_students()`    | —             | Assign students to a course.              |
-| `GET /admin/courses/{id}/students`                | `routers/admin.py` | `admin_controller.get_course_students()`| —             | Get list of students assigned to a course.|
-| `DELETE /admin/courses/{id}/students/{studentId}` | `routers/admin.py` | `admin_controller.remove_student()`     | —             | Remove a specific student from a course.  |
+| Endpoint                                          | Controller Class         | Service Class         | Description                               |
+| ------------------------------------------------- | ----------------------- | --------------------- | ----------------------------------------- |
+| `POST /admin/courses`                             | `AdminController.java`   | —                     | Create a new course (MongoDB: `courses`).                      |
+| `GET /admin/courses`                              | `AdminController.java`   | —                     | Retrieve a list of all courses (MongoDB: `courses`).           |
+| `PUT /admin/courses/{id}`                         | `AdminController.java`   | —                     | Update course details (MongoDB: `courses`).                    |
+| `DELETE /admin/courses/{id}`                      | `AdminController.java`   | —                     | Delete a course (MongoDB: `courses`).                          |
+| `POST /admin/courses/{id}/students`               | `AdminController.java`   | —                     | Assign students to a course (update `courses.students` array in MongoDB).              |
+| `GET /admin/courses/{id}/students`                | `AdminController.java`   | —                     | Get list of students assigned to a course (MongoDB: `courses`).|
+| `DELETE /admin/courses/{id}/students/{studentId}` | `AdminController.java`   | —                     | Remove a specific student from a course (MongoDB: `courses`).  |
 
 ---
 
@@ -47,67 +47,31 @@
 
 #### 📝 Question Bank
 
-| Endpoint                         | Router File          | Controller                             | Service               | Description                                        |
-| -------------------------------- | -------------------- | -------------------------------------- | --------------------- | -------------------------------------------------- |
-| `POST /teacher/questions`        | `routers/teacher.py` | `teacher_controller.create_question()` | `question_service.py` | Add a new question to the question bank.           |
-| `GET /teacher/questions`         | `routers/teacher.py` | `teacher_controller.list_questions()`  | `question_service.py` | Retrieve all questions created by the teacher.     |
-| `GET /teacher/questions/{id}`    | `routers/teacher.py` | `teacher_controller.get_question()`    | `question_service.py` | Fetch a specific question by ID.                   |
-| `PUT /teacher/questions/{id}`    | `routers/teacher.py` | `teacher_controller.update_question()` | `question_service.py` | Update the content or metadata of a question.      |
-| `DELETE /teacher/questions/{id}` | `routers/teacher.py` | `teacher_controller.delete_question()` | `question_service.py` | Delete a specific question from the question bank. |
+| Endpoint                         | Controller Class           | Service Class           | Description                                        |
+| -------------------------------- | ------------------------- | ----------------------- | -------------------------------------------------- |
+| `POST /teacher/questions`        | `TeacherController.java`   | `QuestionService.java`  | Add a new question to the question bank (MongoDB: `questionTexts`).           |
+| `GET /teacher/questions`         | `TeacherController.java`   | `QuestionService.java`  | Retrieve all questions created by the teacher (MongoDB: `questionTexts`).     |
+| `GET /teacher/questions/{id}`    | `TeacherController.java`   | `QuestionService.java`  | Fetch a specific question by ID (MongoDB: `questionTexts`).                   |
+| `PUT /teacher/questions/{id}`    | `TeacherController.java`   | `QuestionService.java`  | Update the content or metadata of a question (MongoDB: `questionTexts`).      |
+| `DELETE /teacher/questions/{id}` | `TeacherController.java`   | `QuestionService.java`  | Delete a specific question from the question bank (MongoDB: `questionTexts`). |
 
 #### 💡 Solution
 
-| Endpoint                                | Router File          | Controller Function                           | Service Layer | Description                                    |
-| --------------------------------------- | -------------------- | --------------------------------------------- | ------------- | ---------------------------------------------- |
-| `POST /teacher/questions/{id}/solution` | `routers/teacher.py` | `teacher_controller.add_or_update_solution()` | —             | Add or update the solution for a question.     |
-| `GET /teacher/questions/{id}/solution`  | `routers/teacher.py` | `teacher_controller.get_solution()`           | —             | Retrieve the solution for a specific question. |
+| Endpoint                                | Controller Class           | Service Class         | Description                                    |
+| --------------------------------------- | ------------------------- | --------------------- | ---------------------------------------------- |
+| `POST /teacher/solutions`               | `TeacherController.java`   | —                     | Add a new solution (MongoDB: `solutionTexts`). |
+| `GET /teacher/solutions/{questionId}`   | `TeacherController.java`   | —                     | Get solution for a question (MongoDB: `solutionTexts`). |
+
+#### 📑 Assignment Management
+
+| Endpoint                                 | Controller Class           | Service Class             | Description                                                      |
+| ---------------------------------------- | ------------------------- | ------------------------- | ---------------------------------------------------------------- |
+| `POST /teacher/assignments`              | `TeacherController.java`   | `AssignmentService.java`  | Create a new assignment (MongoDB: `assignments`).                |
+| `GET /teacher/assignments`               | `TeacherController.java`   | `AssignmentService.java`  | List all assignments (MongoDB: `assignments`).                   |
+| `GET /teacher/assignments/{id}`          | `TeacherController.java`   | `AssignmentService.java`  | Get assignment details (MongoDB: `assignments`).                 |
+| `PUT /teacher/assignments/{id}`          | `TeacherController.java`   | `AssignmentService.java`  | Update assignment details (MongoDB: `assignments`).              |
+| `DELETE /teacher/assignments/{id}`       | `TeacherController.java`   | `AssignmentService.java`  | Delete an assignment (MongoDB: `assignments`).                   |
 
 ---
 
-### ✅ 4. **Assignment APIs**
-
-| Endpoint                                       | Router File          | Controller                               | Service                 | Description                                                       |
-| ---------------------------------------------- | -------------------- | ---------------------------------------- | ----------------------- | ----------------------------------------------------------------- |
-| `POST /teacher/assignments`                    | `routers/teacher.py` | `teacher_controller.create_assignment()` | `assignment_service.py` | Create a new assignment by selecting questions and course targets. |
-| `GET /teacher/assignments`                     | `routers/teacher.py` | `teacher_controller.list_assignments()`  | `assignment_service.py` | Get a list of all created assignments.                            |
-| `GET /teacher/assignments/{id}`                | `routers/teacher.py` | `teacher_controller.get_assignment()`    | —                       | Retrieve details of a specific assignment.                        |
-| `DELETE /teacher/assignments/{id}`             | `routers/teacher.py` | `teacher_controller.delete_assignment()` | —                       | Delete a specific assignment.                                     |
-| `POST /teacher/assignments/{id}/generate`      | `routers/teacher.py` | `teacher_controller.generate()`          | `assignment_service.py` | Generate student-wise question mappings for the assignment.       |
-| `GET /teacher/assignments/{id}/preview`        | `routers/teacher.py` | `teacher_controller.preview()`           | `assignment_service.py` | Preview assignment data including mapping before finalizing.      |
-| `POST /teacher/assignments/{id}/regenerate`    | `routers/teacher.py` | `teacher_controller.regenerate()`        | `assignment_service.py` | Re-generate assignment mappings if changes are needed.            |
-| `POST /teacher/assignments/{id}/generate-pdfs` | `routers/teacher.py` | `teacher_controller.generate_pdfs()`     | `email_pdf_service.py`  | Generate PDFs of assignments per student.                         |
-| `POST /teacher/assignments/{id}/send-emails`   | `routers/teacher.py` | `teacher_controller.send_emails()`       | `email_pdf_service.py`  | Email the assignment PDFs to students automatically.              |
-
----
-
-### ✅ 5. **Utility APIs**
-
-| Endpoint                    | Router File          | Controller Function                     | Service Layer | Description                                                |
-| --------------------------- | -------------------- | --------------------------------------- | ------------- | ---------------------------------------------------------- |
-| `GET /sources`              | `routers/teacher.py` | `teacher_controller.get_sources()`      | —             | Get list of sources  (leetcode, hackerrank, codechef).     |
-| `GET /topics`               | `routers/teacher.py` | `teacher_controller.get_topics()`       | —             | Get list of predefined topics to tag questions.            |
-| `GET /difficulties`         | `routers/teacher.py` | `teacher_controller.get_difficulties()` | —             | Get supported difficulty levels (easy, medium, hard).      |
-| `GET /teacher/{id}/courses` | `routers/teacher.py` | `teacher_controller.get_my_courses()`   | —             | Get courses assigned to the logged-in teacher.             |
-
----
-
-### 📌 **Summary**
-
-| **Module**                              | **Endpoint**                                                                                                                                    |
-| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Authentication**                      | `/auth/login`, `/auth/logout`                                                                                                                   |
-| **Admin: Teacher Management**           | `/admin/teachers`, `/admin/teachers/{teacherId}`                                                                                                |
-| **Admin: Student Management**           | `/admin/students`, `/admin/students/{studentId}`                                                                                                |
-| **Admin: Course Management**            | `/admin/courses`, `/admin/courses/{courseId}`                                                                                                   |
-| **Admin: Assign Students to Course**    | `/admin/courses/{courseId}/students`, `/admin/courses/{courseId}/students/{studentId}`                                                          |
-| **Teacher: Question Bank Management**   | `/teacher/questions`, `/teacher/questions/{questionId}`                                                                                         |
-| **Teacher: Solution Management**        | `/teacher/questions/{questionId}/solution`                                                                                                      |
-| **Teacher: Assignment CRUD**            | `/teacher/assignments`, `/teacher/assignments/{assignmentId}`                                                                                   |
-| **Teacher: Random Question Generation** | `/teacher/assignments/{assignmentId}/generate`, `/teacher/assignments/{assignmentId}/preview`, `/teacher/assignments/{assignmentId}/regenerate` |
-| **Teacher: PDF & Email Management**     | `/teacher/assignments/{assignmentId}/generate-pdfs`, `/teacher/assignments/{assignmentId}/send-emails`                                          |
-| **Utility: Source Name Retrieval**      | `/sources`                                                                                                                                      |
-| **Utility: Topic Retrieval**            | `/topics`                                                                                                                                       |
-| **Utility: Difficulty Retrieval**       | `/difficulties`                                                                                                                                 |
-| **Utility: Teacher Courses**            | `/teacher/{teacherId}/courses`                                                                                                                  |
-
----
+All endpoints operate on MongoDB collections. All IDs are MongoDB ObjectIds. No SQL/relational tables are used anywhere in the API or backend. All backend logic is implemented in Java Spring Boot.
