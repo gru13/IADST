@@ -1,0 +1,9 @@
+// AdminDashboard.jsx
+// Admin home with stats & links
+import React from 'react';
+
+const AdminDashboard = () => {
+  return <div>Admin Dashboard</div>;
+};
+
+export default AdminDashboard;
