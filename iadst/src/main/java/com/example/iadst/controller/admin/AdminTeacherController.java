@@ -72,7 +72,7 @@ public class AdminController {
     @PutMapping("/teachers/{id}")
     public  ResponseEntity<Teachers> modifyParameter(@PathVariable String id, @RequestBody   HashMap<String, String> modifiedContent){
         Teachers element = teacherRepo.findById(new ObjectId(id)).get();
-        List<Integer> result = modifiedContent.entrySet().stream().map(entity -> teacherService.test(entity.getKey(), entity.getValue(), id)).toList();
+        List<Teachers> result = modifiedContent.entrySet().stream().map(entity -> teacherService.updateParameter(entity.getKey(), entity.getValue(), id)).toList();
         System.out.println(result);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -84,6 +84,6 @@ public class AdminController {
 
         return ResponseEntity.status(HttpStatus.OK).body(elemtn);
     }
-    
+
 
 }
