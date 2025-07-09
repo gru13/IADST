@@ -16,34 +16,18 @@ public class TeacherService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public Boolean insertTeacher(Teachers item){
-        try {
-            Query query;
-            query = new Query(Criteria.where("email").is(item.getEmail()));
-            if(mongoTemplate.exists(query,Teachers.class)){
-                System.out.println("\nTeacher Exist\n");
-                return Boolean.TRUE;
-            }else{
-                System.out.println("Teacher is not there");
-                return Boolean.FALSE;
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public int test(String k, String v, String id){
-        if (v == null){
-            return  1;
-        }
+    public Teachers updateParameter(String k, String v, String id){
 
         Query query = new Query(Criteria.where("id").is(id));
         Update update = new Update().set(k,v);
 
         mongoTemplate.updateFirst(query, update, Teachers.class);
 
-        System.out.println(k + "---"+ v);
-        return k.length() + v.length();
+        Teachers Updateditem = mongoTemplate.findOne(query, Teachers.class);
+
+        if (Updateditem != null) {
+            System.out.println(Updateditem.toString());
+        }
+        return Updateditem;
     }
 }

@@ -10,12 +10,18 @@ package com.example.iadst.models;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "students")
 public class Students {
     @Id
@@ -27,59 +33,21 @@ public class Students {
     @NotEmpty
     private String name;
 
-    public Students() {}
-
-    public Students(ObjectId id, String rollNumber, String name, String email) {
-        this.id = id;
-        this.rollNumber = rollNumber;
-        this.name = name;
-        Email = email;
-    }
-
     @NotBlank(message = "Email can't be empty")
     @Email(message = "This is not a valid email")
-    private String Email;
+    private String email;
 
+    @Transient
+    private String message;
+
+    public Students(String message){
+        this.message = message;
+    }
 
     public String getId() {
+        if (this.id == null){
+            return "null";
+        }
         return id.toString();
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
-    public String getRollNumber() {
-        return rollNumber;
-    }
-
-    public void setRollNumber(String rollNumber) {
-        this.rollNumber = rollNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        Email = email;
-    }
-
-    @Override
-    public String toString() {
-        return "Students{" +
-                "id=" + id +
-                ", rollNumber='" + rollNumber + '\'' +
-                ", name='" + name + '\'' +
-                ", Email='" + Email + '\'' +
-                '}';
     }
 }

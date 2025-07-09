@@ -11,21 +11,18 @@ package com.example.iadst.models;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Document(collection = "teachers")
 public class Teachers {
     @Id
@@ -54,14 +51,7 @@ public class Teachers {
         return id.toString();
     }
 
-    @Override
-    public String toString() {
-        return "Teachers{" +
-                "id=" + id +
-                ", facultyId='" + facultyId + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", message='" + message + '\'' +
-                '}';
+    public Teachers(String message){
+        this.message = message;
     }
 }
