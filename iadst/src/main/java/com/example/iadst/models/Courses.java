@@ -3,8 +3,8 @@ package com.example.iadst.models;
 //{
 //    "_id": ObjectId("..."),
 //    "courseName": "Course 101",
-//    "teacherId": ObjectId("..."),  // Ref: teachers._id, assigned by Admin
-//    "students": [ObjectId("..."), ObjectId("..."), ObjectId("...")],  // Ref: students._id, assigned by Admin
+//    "teacherId": ObjectId("..."),  // Ref: Teachers._id, assigned by Admin
+//    "Students": [ObjectId("..."), ObjectId("..."), ObjectId("...")],  // Ref: Students._id, assigned by Admin
 //}
 
 import jakarta.validation.constraints.NotBlank;
@@ -23,13 +23,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "courses")
-public class courses {
+public class Courses {
 
     @Id
     private ObjectId id;
 
-    @NotBlank
-    private String coursesName;
+    @NotBlank(message = "Course name must not be blank")
+    private String courseName;
     private ObjectId teacherId;
     private List<ObjectId> students;
 
@@ -37,13 +37,17 @@ public class courses {
         return id.toString();
     }
 
+    public String getTeacherId(){
+        return teacherId.toString();
+    }
+
     @Override
     public String toString() {
-        return "courses{" +
+        return "Courses{" +
                 "id=" + id +
-                ", coursesName='" + coursesName + '\'' +
+                ", courseName='" + courseName + '\'' +
                 ", teacherId=" + teacherId +
-                ", students=" + students +
+                ", Students=" + students +
                 '}';
     }
 }

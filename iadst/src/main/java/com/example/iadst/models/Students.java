@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection = "students")
-public class students {
+public class Students {
     @Id
     private ObjectId id;
 
@@ -27,9 +27,9 @@ public class students {
     @NotEmpty
     private String name;
 
-    public students() {}
+    public Students() {}
 
-    public students(ObjectId id, String rollNumber, String name, String email) {
+    public Students(ObjectId id, String rollNumber, String name, String email) {
         this.id = id;
         this.rollNumber = rollNumber;
         this.name = name;
@@ -75,7 +75,7 @@ public class students {
 
     @Override
     public String toString() {
-        return "students{" +
+        return "Students{" +
                 "id=" + id +
                 ", rollNumber='" + rollNumber + '\'' +
                 ", name='" + name + '\'' +

@@ -32,10 +32,9 @@ Data Flow:
 ```json
 {
   "_id": ObjectId("..."),
+  "facultyId": "TCH12345",
   "name": "John Doe",
-  "email": "john.doe@example.com",
-  "createdAt": ISODate("2025-02-01T00:00:00Z"),
-  "updatedAt": ISODate("2025-02-01T00:00:00Z")
+  "email": "john.doe@example.com"
 }
 ```
 
@@ -47,8 +46,6 @@ Data Flow:
   "rollNumber": "CS2023001",
   "name": "Jane Smith",
   "email": "jane.smith@example.com",
-  "createdAt": ISODate("2025-02-01T00:00:00Z"),
-  "updatedAt": ISODate("2025-02-01T00:00:00Z")
 }
 ```
 
@@ -60,8 +57,6 @@ Data Flow:
   "courseName": "Course 101",
   "teacherId": ObjectId("..."),  // Ref: teachers._id, assigned by Admin
   "students": [ObjectId("..."), ObjectId("..."), ObjectId("...")],  // Ref: students._id, assigned by Admin
-  "createdAt": ISODate("2025-02-01T00:00:00Z"),
-  "updatedAt": ISODate("2025-02-01T00:00:00Z")
 }
 ```
 
@@ -81,8 +76,6 @@ Data Flow:
   "sampleInput": "5 4 3 2 1",
   "sampleOutput": "1 2 3 4 5",
   "createdBy": ObjectId("..."), // Ref: teachers._id
-  "createdAt": ISODate("2025-02-01T00:00:00Z"),
-  "updatedAt": ISODate("2025-02-01T00:00:00Z")
 }
 ```
 
@@ -94,8 +87,6 @@ Data Flow:
   "questionId": ObjectId("..."), // Ref: questionTexts._id
   "solution": "def sort_array(arr): ...",
   "createdBy": ObjectId("..."), // Ref: teachers._id
-  "createdAt": ISODate("2025-02-01T00:00:00Z"),
-  "updatedAt": ISODate("2025-02-01T00:00:00Z")
 }
 ```
 
@@ -115,8 +106,6 @@ Data Flow:
     }
   ],
   "createdBy": ObjectId("..."), // Ref: teachers._id
-  "createdAt": ISODate("2025-02-01T00:00:00Z"),
-  "updatedAt": ISODate("2025-02-01T00:00:00Z")
 }
 ```
 

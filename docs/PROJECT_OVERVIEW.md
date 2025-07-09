@@ -85,9 +85,9 @@ Build a hybrid system that enables teachers to efficiently manage a coding quest
 All data is now stored and managed using MongoDB.
 
 * **teachers**:
-  * `name`, `email`, `createdAt`, `updatedAt`
+  * `name`, `email`
 * **students**:
-  * `rollNumber`, `name`, `email`, `createdAt`, `updatedAt`
+  * `rollNumber`, `name`, `email`
 * **questionTexts**:
   * `description`, `inputFormat`, `outputFormat`, `constraints`, `sampleInputs`, `sampleOutputs`
 * **solutionTexts**:
@@ -95,7 +95,7 @@ All data is now stored and managed using MongoDB.
 * **courses**:
   * `courseName`, `teacherId`, `students` (array of ObjectId), `assignments`
 * **assignments**:
-  * `name`, `description`, `dueDate`, `courseId`, `difficultyDistribution`, `totalMarks`, `students` (mapping), `createdAt`, `updatedAt`
+  * `name`, `description`, `dueDate`, `courseId`, `difficultyDistribution`, `totalMarks`, `students` (mapping)
 
 ---
 
