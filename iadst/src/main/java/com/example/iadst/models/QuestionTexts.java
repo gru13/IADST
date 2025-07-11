@@ -17,17 +17,17 @@ package com.example.iadst.models;
 //}
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.iadst.enums.Difficulty;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "questionTexts")
@@ -35,7 +35,7 @@ public class QuestionTexts {
     @Id
     private ObjectId id;
     private String topic;
-    private String difficulty;
+    private Difficulty difficulty;
     private int marks;
     private String source;
     private String description;
@@ -46,31 +46,27 @@ public class QuestionTexts {
     private String sampleOutput;
     private ObjectId createdBy;
 
+    @Transient
+    String message;
 
-    @Override
-    public String toString() {
-        return "QuestionTexts{" +
-                "id=" + id +
-                ", topic='" + topic + '\'' +
-                ", difficulty='" + difficulty + '\'' +
-                ", marks=" + marks +
-                ", source='" + source + '\'' +
-                ", description='" + description + '\'' +
-                ", inputFormat='" + inputFormat + '\'' +
-                ", outputFormat='" + outputFormat + '\'' +
-                ", constraints='" + constraints + '\'' +
-                ", sampleInput='" + sampleInput + '\'' +
-                ", sampleOutput='" + sampleOutput + '\'' +
-                ", createdBy=" + createdBy +
-                '}';
+    public String getDifficulty() {
+        if (this.difficulty == null) {
+            return "null";
+        }
+        return this.difficulty.name();
     }
 
-
     public String getCreatedBy() {
+        if (this.createdBy == null) {
+            return "null";
+        }
         return createdBy.toString();
     }
 
     public String getId() {
+        if (this.id == null) {
+            return "null";
+        }
         return id.toString();
     }
 }

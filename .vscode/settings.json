@@ -3,8 +3,14 @@
     ".env*": "dotenv"
   },
   "github.copilot.enable": {
-    "*": true,
-    "dotenv": false
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+    ".env": false,
+    "javascript": false,
+    "dotenv": false,
+    "css": false
   },
   "search.exclude": {
     "**/.env": true

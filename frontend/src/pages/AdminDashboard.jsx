@@ -1,20 +1,28 @@
 // AdminDashboard.jsx
 // Admin home with stats & links
-import React from 'react';
+import AdminSideBar from "../components/admin/AdminSideBar";
 
 const AdminDashboard = () => {
-  return( 
-  <div className='text-light-lavender text-5xl '>
-    <h1 className='h-2/10 text-5xl p-2'>
-      ADMIN PAGE
-    </h1>
-    <div className='h-8/10 min-h- flex'>
-      <div className='sideBar w-2/10 min-w-min border-2 border-amber-300'>vfsdv s</div>
-      <div className='content w-8/10 min-w-min border-2 border-amber-300'>vdsvsv</div>
 
-    </div>
 
-  </div>);
+  return (
+    <div className='text-light-lavender h-dvh flex'>
+      
+      <AdminSideBar />
+
+      <div>
+
+        <h1 className='flex h-1/12 text-5xl items-center pl-[5%]'>ADMIN</h1>
+
+        <div className='content w-[88%]'></div>
+
+      </div>
+
+    </div >
+    );
 };
+
+
+
 
 export default AdminDashboard;
