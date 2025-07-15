@@ -15,6 +15,8 @@ import javax.sound.midi.Soundbank;
 import java.util.HashMap;
 import java.util.List;
 
+
+@CrossOrigin( origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/admin/course")
 public class AdminCourseController{

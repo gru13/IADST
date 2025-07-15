@@ -11,6 +11,7 @@ package com.example.iadst.models;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -35,10 +36,15 @@ public class Teachers {
     @NotBlank
     private String name;
 
-    @NotBlank(message = "Email can't be empty")
     @Email(message = "This is not a valid email")
     @Indexed
     private String email;
+
+    @Pattern(
+            regexp = "^(\\+91|91|0)?[6-9]\\d{9}$",
+            message = "Invalid Indian phone number"
+    )
+    private String phoneNo;
 
     @Transient
     private String message;

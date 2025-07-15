@@ -1,9 +1,63 @@
 // StudentList.jsx
 // Table of students with actions
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { FaSearch } from "react-icons/fa";
+import { IoAddCircleOutline } from "react-icons/io5";
+import ItemCard from './ItemCard';
+import TeacherForm from './TeacherForm';
 
-const StudentList = () => {
-  return <div>Student List</div>;
+function StudentList() {
+
+  const [data, setData] = useState([])
+  useEffect(() => {
+    fetch("http://localhost:8080/admin/students/all")
+      .then(resp => resp.json())
+      .then(res => { setData(res) })
+      .catch(e => console.log(e))
+  }, [])
+
+  async function deleteItem(Id) {
+    try {
+      console.log(Id);
+      const url = `http://localhost:8080/admin/students/${Id}`;
+      const respon = await fetch(url, { method: 'DELETE' });
+      if (respon.ok) {
+        setData(prev => prev.filter(t => t["id"] !== Id))
+      }
+      const result = await respon.json();
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  return (
+    
+    <div className="flex flex-col h-full">
+
+      <div className='flex text-3xl items-center justify-between flex-none' >
+
+        <button><IoAddCircleOutline /></button>
+
+        <div className='flex grow text-xl items-center border-1 border-accent-color-2 p-4 py-3 mx-3 rounded-2xl'>
+          <input type="text" placeholder='Search here!!' className='grow px-2 rounded-2xl outline-none text-3xl' />
+          <button type="submit" className='flex items-center hover:scale-110'>
+            <FaSearch />
+          </button>
+        </div>
+
+      </div>
+
+
+      <div className='Itemlist pt-9 flex flex-wrap justify-evenly flex-1 overflow-y-auto'>
+        {data.map((teacher, index) => (
+          <ItemCard element={teacher} key={index} deleteItem={deleteItem} />
+        ))}
+      </div>
+
+    </div>  
+  );
 };
 
 export default StudentList;
