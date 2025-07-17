@@ -28,19 +28,25 @@ public class Students {
     @Id
     private ObjectId id;
 
+
+    @NotBlank(message = "Roll number cannot be blank")
+    @Pattern(regexp = "^[A-Z]{2}\\d{7}$", message = "Roll number must be 2 uppercase letters followed by 7 digits")
     @Indexed(unique = true)
     private String rollNumber;
 
-    @NotEmpty
+    @NotBlank(message = "Name cannot be blank")
+    @Pattern(regexp = "^[a-zA-Z\\s]{2,50}$", message = "Name must be 2-50 characters long and contain only letters")
     private String name;
 
-    @NotBlank(message = "Email can't be empty")
-    @Email(message = "This is not a valid email")
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Please provide a valid email address")
+    @Indexed(unique = true)
     private String email;
 
+    @NotBlank(message = "Phone number cannot be blank")
     @Pattern(
             regexp = "^(\\+91|91|0)?[6-9]\\d{9}$",
-            message = "Invalid Indian phone number"
+            message = "Please provide a valid Indian phone number"
     )
     private String phoneNo;
 

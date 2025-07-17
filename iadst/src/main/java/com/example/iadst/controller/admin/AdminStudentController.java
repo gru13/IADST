@@ -9,11 +9,13 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 
+@Validated
 @CrossOrigin( origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/admin/students")
@@ -37,13 +39,13 @@ public class AdminStudentController {
     }
 
     @PostMapping(path = "/")
-    public ResponseEntity<Students> addStudent(@Valid @RequestBody Students item){
+
+    public ResponseEntity<?> addStudent(@Valid @RequestBody Students item){
         System.out.println(item.toString());
 
         if(studentRepo.existsByEmail(item.getEmail())){
-            System.out.println("Already Student Exist");
-            item.setMessage("Already Student Exist");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(item);
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(java.util.Map.of("error", "Already Student Exist"));
         }
 
         Students result =  studentRepo.save(item);

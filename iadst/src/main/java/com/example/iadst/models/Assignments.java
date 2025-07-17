@@ -36,12 +36,23 @@ public class Assignments {
 
     @Id
     private ObjectId id;
+
+    @NotNull(message = "Course ID is required")
     private ObjectId courseId;
+
+    @NotBlank(message = "Topic cannot be blank")
+    @Pattern(regexp = "^[A-Za-z0-9\\s-]{3,100}$", message = "Topic must be 3-100 characters and contain only letters, numbers, spaces, and hyphens")
     private String topic;
+
+    @NotNull(message = "Question distribution is required")
+    @Valid
     private HashMap<String,Integer> questionDistribution;
 
-    private List<AssignedStudent> assignedTo;
+    @NotNull(message = "Assigned students list cannot be null")
+    @Valid
+    private List<AssignedStudent> assignedTo = new ArrayList<>();
 
+    @NotNull(message = "Creator ID is required")
     private ObjectId createdBy;
 }
 

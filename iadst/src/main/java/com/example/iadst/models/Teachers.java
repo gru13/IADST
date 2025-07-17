@@ -29,20 +29,24 @@ public class Teachers {
     @Id
     private ObjectId id;
 
-    @NotBlank
+    @NotBlank(message = "Faculty ID cannot be blank")
+    @Pattern(regexp = "^[A-Z]{3}\\d{5}$", message = "Faculty ID must be 3 uppercase letters followed by 5 digits")
     @Indexed(unique = true)
     private String facultyId;
 
-    @NotBlank
+    @NotBlank(message = "Name cannot be blank")
+    @Pattern(regexp = "^[a-zA-Z\\s]{2,50}$", message = "Name must be 2-50 characters long and contain only letters and spaces")
     private String name;
 
-    @Email(message = "This is not a valid email")
-    @Indexed
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Please provide a valid email address")
+    @Indexed(unique = true)
     private String email;
 
+    @NotBlank(message = "Phone number cannot be blank")
     @Pattern(
             regexp = "^(\\+91|91|0)?[6-9]\\d{9}$",
-            message = "Invalid Indian phone number"
+            message = "Please provide a valid Indian phone number"
     )
     private String phoneNo;
 

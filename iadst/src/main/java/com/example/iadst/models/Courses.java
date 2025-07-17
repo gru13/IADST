@@ -16,6 +16,7 @@ import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -30,10 +31,16 @@ public class Courses {
     @Id
     private ObjectId id;
 
-    @NotBlank(message = "Course name must not be blank")
+    @NotBlank(message = "Course name cannot be blank")
+    @Pattern(regexp = "^[A-Za-z0-9\\s-]{3,50}$", message = "Course name must be 3-50 characters and contain only letters, numbers, spaces, and hyphens")
+    @Indexed(unique = true)  
     private String courseName;
+    
+    @NotNull(message = "Teacher ID is required")
     private ObjectId teacherId;
-    private List<ObjectId> students;
+    
+    @NotNull(message = "Students list cannot be null")
+    private List<ObjectId> students = new ArrayList<>();
 
     @Transient
     private  String message;

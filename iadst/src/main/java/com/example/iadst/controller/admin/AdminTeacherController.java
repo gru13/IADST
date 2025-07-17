@@ -15,39 +15,57 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 
-@CrossOrigin( origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/admin/teachers")
+@Validated
+@Tag(name = "Teacher Management", description = "APIs for managing teachers")
 public class AdminTeacherController {
 
-    @Autowired
-    private TeacherRepo teacherRepo;
+    private final TeacherRepo teacherRepo;
+    private final TeacherService teacherService;
 
     @Autowired
-    private TeacherService teacherService;
+    public AdminTeacherController(TeacherRepo teacherRepo, TeacherService teacherService) {
+        this.teacherRepo = teacherRepo;
+        this.teacherService = teacherService;
+    }
 
     @GetMapping("/all")
+    @Operation(summary = "Get all teachers", description = "Retrieves a list of all teachers")
     public ResponseEntity<List<Teachers>> getTeachers() {
         List<Teachers> teachersList = teacherRepo.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(teachersList);
+        return ResponseEntity.ok(teachersList);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get teacher by ID", description = "Retrieves a teacher by their ID")
     public ResponseEntity<Teachers> getOneTeacher(@PathVariable String id) {
-        Teachers teacher = teacherRepo.findById(new ObjectId(id)).get();
-        return ResponseEntity.status(HttpStatus.OK).body(teacher);
+        return teacherRepo.findById(new ObjectId(id))
+            .map(ResponseEntity::ok)
+            .orElseThrow(() -> new ResourceNotFoundException("Teacher", "id", id));
     }
 
+    @PostMapping
+    @Operation(summary = "Add new teacher", description = "Creates a new teacher")
+    public ResponseEntity<?> addTeacher(@Valid @RequestBody Teachers teacher) {
+        if (teacherRepo.existsByEmail(teacher.getEmail())) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("timestamp", new Date());
+            response.put("status", HttpStatus.CONFLICT.value());
+            response.put("error", "Email already registered");
+            response.put("message", "Teacher with email " + teacher.getEmail() + " already exists");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
-    @PostMapping("/")
-    public ResponseEntity<Teachers> addTeacher(@Valid @RequestBody Teachers item) {
-
-        System.out.println(item.toString());
-
-        if (teacherRepo.existsByEmail(item.getEmail())){
-            System.out.println("Item Exist");
-            item.setMessage("Element is already exist");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(item);
+        if (teacherRepo.existsByFacultyId(teacher.getFacultyId())) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("timestamp", new Date());
+            response.put("status", HttpStatus.CONFLICT.value());
+            response.put("error", "Faculty ID already registered");
+            response.put("message", "Teacher with faculty ID " + teacher.getFacultyId() + " already exists");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         }
 
         Teachers insertedItem = teacherRepo.save(item);
@@ -58,6 +76,8 @@ public class AdminTeacherController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Teachers> modifyParameter(@PathVariable String id, @RequestBody HashMap<String, String> modifiedContent) {
+
+        System.out.println(modifiedContent.toString());
 
         if(!teacherRepo.existsById(new ObjectId(id))){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Teachers("NO Student with id-"+ id + "is Found"));

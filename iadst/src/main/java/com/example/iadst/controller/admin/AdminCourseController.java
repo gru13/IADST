@@ -19,7 +19,8 @@ import java.util.List;
 @CrossOrigin( origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/admin/course")
-public class AdminCourseController{
+@Validated
+public class AdminCourseController {
 
     @Autowired
     CourseRepo courseRepo;
@@ -38,8 +39,12 @@ public class AdminCourseController{
     }
 
     @PostMapping(path = "/")
-    public ResponseEntity<Courses> postAll(@RequestBody Courses item){
-        return ResponseEntity.status(HttpStatus.OK).body(courseRepo.save(item));
+    public ResponseEntity<?> postAll(@Valid @RequestBody Courses item) {
+        if (courseRepo.existsByCourseName(item.getCourseName())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("error", "Course with this name already exists"));
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseRepo.save(item));
     }
 
     @DeleteMapping(path = "/{id}")
