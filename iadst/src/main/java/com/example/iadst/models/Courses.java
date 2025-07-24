@@ -3,12 +3,13 @@ package com.example.iadst.models;
 //{
 //    "_id": ObjectId("..."),
 //    "courseName": "Course 101",
-//    "teacherId": ObjectId("..."),  // Ref: Teachers._id, assigned by Admin
+//    "facultyId": ObjectId("..."),
 //    "Students": [ObjectId("..."), ObjectId("..."), ObjectId("...")],  // Ref: Students._id, assigned by Admin
 //}
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -37,7 +39,7 @@ public class Courses {
     private String courseName;
     
     @NotNull(message = "Teacher ID is required")
-    private ObjectId teacherId;
+    private ObjectId facultyId;
     
     @NotNull(message = "Students list cannot be null")
     private List<ObjectId> students = new ArrayList<>();
@@ -57,10 +59,10 @@ public class Courses {
     }
 
     public String getTeacherID(){
-        if(this.teacherId == null){
+        if(this.facultyId == null){
             return "null";
         }
-        return this.teacherId.toString();
+        return this.facultyId.toString();
     }
 
     public List<String> getStudents(){
@@ -84,7 +86,7 @@ public class Courses {
         return "Courses{" +
                 "id=" + id +
                 ", courseName='" + courseName + '\'' +
-                ", teacherId=" + teacherId +
+                ", teacherId=" + facultyId +
                 ", Students=" + students +
                 '}';
     }

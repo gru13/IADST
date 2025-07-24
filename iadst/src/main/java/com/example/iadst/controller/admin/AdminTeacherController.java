@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/admin/teachers")
 @Validated
@@ -44,6 +44,15 @@ public class AdminTeacherController {
         return ResponseEntity.ok(teachersList);
     }
 
+    @GetMapping("/all/list/name")
+    @Operation(description ="List of Names"  , summary = "get the list of String contains faculty Names")
+    public  ResponseEntity<List<String>> getAllTeacherNameList(){
+        List<Teachers> teachersList = teacherRepo.findAll();
+        List<String> teacherrNamelist = teachersList.stream().map(Teachers::getName).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(teacherrNamelist);
+    }
+
+
     @GetMapping("/{id}")
     @Operation(summary = "Get teacher by ID", description = "Retrieves a teacher by their ID")
     public ResponseEntity<Teachers> getOneTeacher(@PathVariable String id) {
@@ -56,6 +65,7 @@ public class AdminTeacherController {
     @Operation(summary = "Add new teacher", description = "Creates a new teacher")
     public ResponseEntity<?> addTeacher(@Valid @RequestBody Teachers teacher) {
         if (teacherRepo.existsByEmail(teacher.getEmail())) {
+            System.out.println("Teacher Email exist");
             Map<String, Object> response = new HashMap<>();
             response.put("timestamp", new Date());
             response.put("status", HttpStatus.CONFLICT.value());
@@ -65,6 +75,7 @@ public class AdminTeacherController {
         }
 
         if (teacherRepo.existsByFacultyId(teacher.getFacultyId())) {
+            System.out.println("Teacher FacultyId exist");
             Map<String, Object> response = new HashMap<>();
             response.put("timestamp", new Date());
             response.put("status", HttpStatus.CONFLICT.value());
@@ -106,6 +117,5 @@ public class AdminTeacherController {
 
         return ResponseEntity.status(HttpStatus.OK).body(element);
     }
-
 
 }

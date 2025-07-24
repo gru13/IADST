@@ -18,6 +18,7 @@ package com.example.iadst.models;
 
 
 import com.example.iadst.enums.Difficulty;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
