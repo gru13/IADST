@@ -1,7 +1,6 @@
 package com.example.iadst.controller.admin;
 
 import com.example.iadst.models.Students;
-import com.example.iadst.models.Teachers;
 import com.example.iadst.repos.StudentRepo;
 import com.example.iadst.services.StudentsService;
 import jakarta.validation.Valid;

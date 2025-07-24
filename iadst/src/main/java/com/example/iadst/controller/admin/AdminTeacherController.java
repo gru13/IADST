@@ -1,19 +1,25 @@
 package com.example.iadst.controller.admin;
 
 
+import com.example.iadst.exception.ResourceNotFoundException;
 import com.example.iadst.models.Students;
 import com.example.iadst.models.Teachers;
 import com.example.iadst.repos.TeacherRepo;
 import com.example.iadst.services.TeacherService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -66,39 +72,37 @@ public class AdminTeacherController {
             response.put("message", "Teacher with faculty ID " + teacher.getFacultyId() + " already exists");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-        }
 
-        Teachers insertedItem = teacherRepo.save(item);
+        Teachers insertedItem = teacherRepo.save(teacher);
         insertedItem.setMessage("Successfully inserted");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(insertedItem);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update teacher", description = "Updates an existing teacher's information")
     public ResponseEntity<Teachers> modifyParameter(@PathVariable String id, @RequestBody HashMap<String, String> modifiedContent) {
-
-        System.out.println(modifiedContent.toString());
-
         if(!teacherRepo.existsById(new ObjectId(id))){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Teachers("NO Student with id-"+ id + "is Found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Teachers("No Teacher with id " + id + " was found"));
         }
 
-        Teachers element = teacherRepo.findById(new ObjectId(id)).get();
-        List<Teachers> result = modifiedContent.entrySet().stream().map(entity -> teacherService.updateParameter(entity.getKey(), entity.getValue(), id)).toList();
-        System.out.println(result.getLast());
-
+        List<Teachers> result = modifiedContent.entrySet().stream()
+            .map(entity -> teacherService.updateParameter(entity.getKey(), entity.getValue(), id))
+            .toList();
+        
         return ResponseEntity.status(HttpStatus.OK).body(result.getLast());
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete teacher", description = "Deletes a teacher by their ID")
     public ResponseEntity<Teachers> deleteTeacher(@PathVariable String id) {
         if(!teacherRepo.existsById(new ObjectId(id))){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Teachers("NO Student with id-"+ id + "is Found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Teachers("No Teacher with id " + id + " was found"));
         }
 
         Teachers element = teacherRepo.findById(new ObjectId(id)).get();
         teacherRepo.deleteById(new ObjectId(id));
-        element.setMessage("deleted Successfully");
+        element.setMessage("Teacher deleted successfully");
 
         return ResponseEntity.status(HttpStatus.OK).body(element);
     }
