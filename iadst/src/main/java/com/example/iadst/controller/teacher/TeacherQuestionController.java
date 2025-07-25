@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/teacher/questions")
+@RequestMapping("/api/teacher/questions")
 public class TeacherQuestionController {
     @Autowired
     QuestionTextRepo questionTextRepo;

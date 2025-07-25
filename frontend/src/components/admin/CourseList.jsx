@@ -4,56 +4,51 @@ import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { MdOutlineDelete, MdOutlineEdit, MdOutlineSave } from "react-icons/md";
+import api from '../../api/axios';
 
 
-function CourseCard({ element }) {
+function CourseCard({ element, allStudents, onUpdateCourse }) {
   const [item, setItem] = useState({ ...element });
   const [edit, setEdit] = useState(false);
   const [teachersList, setTeacherList] = useState([]);
+  // Use student objects for this course
   const [studentsList, setStudentsList] = useState([]);
 
   useEffect(() => {
     const getTeacherList = async () => {
       try {
-        const response = await fetch('http://localhost:8080/admin/teachers/all/list/name');
-        if (!response.ok) throw new Error('Failed to fetch teachers');
-        const res = await response.json();
-        setTeacherList(res);
+        const response = await api.get('/admin/teachers/all/list/name');
+        setTeacherList(response.data);
       } catch (error) {
         alert(`Error fetching teachers: ${error.message}`);
       }
     };
-
-    const getStudentsList = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/admin/course/${item.id}/students`);
-        if (!response.ok) throw new Error('Failed to fetch student IDs');
-
-        const studentIds = await response.json(); // list of student ID strings
-
-        const results = await Promise.allSettled(
-          studentIds.map(async (id) => {
-            const res = await fetch(`http://localhost:8080/admin/students/${id}`);
-            if (!res.ok) throw new Error(`Failed to fetch student ${id}`);
-            return res.json();
-          })
-        );
-
-        const successfulStudents = results
-          .filter(result => result.status === 'fulfilled')
-          .map(result => result.value);
-
-        setStudentsList(successfulStudents);
-        console.log('Loaded students:', successfulStudents);
-      } catch (error) {
-        alert(`Error fetching students list: ${error.message}`);
-      }
-    };
-
-
     getTeacherList();
-    getStudentsList();
-  }, [item.id]);
+    // Set studentsList from allStudents using item.students (array of IDs)
+    if (item.students && Array.isArray(item.students)) {
+      setStudentsList(
+        allStudents.filter(s => item.students.includes(s.id))
+      );
+    } else {
+      setStudentsList([]);
+    }
+  }, [item.id, item.students, allStudents]);
+
+  // Add/remove student handlers (to be used in UI)
+  const handleAddStudent = (studentId) => {
+    if (!item.students.includes(studentId)) {
+      const updated = { ...item, students: [...item.students, studentId] };
+      setItem(updated);
+      setStudentsList(allStudents.filter(s => updated.students.includes(s.id)));
+      if (onUpdateCourse) onUpdateCourse(updated);
+    }
+  };
+  const handleRemoveStudent = (studentId) => {
+    const updated = { ...item, students: item.students.filter(id => id !== studentId) };
+    setItem(updated);
+    setStudentsList(allStudents.filter(s => updated.students.includes(s.id)));
+    if (onUpdateCourse) onUpdateCourse(updated);
+  };
 
   const handleChanges = (e) => {
     setItem((prev) => ({
@@ -90,12 +85,19 @@ function CourseCard({ element }) {
 
         </select>
 
-        <div className="mt-4">
+        <div className="mt-4 flex grow overflow-y-auto">
           <h3 className="text-xl font-bold">Students:</h3>
           <ul>
             {studentsList.map((student, index) => (
-              <li key={index} className="text-lg">
+              <li key={index} className="text-lg flex items-center">
                 {student.name} ({student.rollNumber})
+                <button
+                  className="ml-2 text-red-500 hover:text-red-700"
+                  onClick={() => handleRemoveStudent(student.id)}
+                  title="Remove student"
+                >
+                  <MdOutlineDelete />
+                </button>
               </li>
             ))}
           </ul>
@@ -125,47 +127,50 @@ function CourseCard({ element }) {
 
 
 function CourseList() {
-
-
   const [data, setData] = useState([]);
-
+  const [allStudents, setAllStudents] = useState([]);
 
   useEffect(() => {
-    const fetchCourse = async () => {
-      const respons = await fetch('http://localhost:8080/admin/course/all', {
-        method: "GET"
-      })
+    const fetchAll = async () => {
+      const [coursesResp, studentsResp] = await Promise.all([
+        api.get('/admin/course/all'),
+        api.get('/admin/students/all'),
+      ]);
+      setData(coursesResp.data);
+      setAllStudents(studentsResp.data);
+    };
+    fetchAll();
+  }, []);
 
-      const result = await respons.json();
-      setData(result);
-    }
-    fetchCourse();
-  }
-    , []
-  )
-
+  // Handler to update course students (to be implemented for backend sync)
+  const handleUpdateCourse = (updatedCourse) => {
+    setData(prev => prev.map(c => c.id === updatedCourse.id ? updatedCourse : c));
+    // TODO: Call backend to update course students
+  };
 
   return (
-    <div className="flex flex-col h-full max-w-1000">
-      <div className="flex text-3xl items-center justify-between flex-none mb-5">
-        <button>
-          <IoAddCircleOutline />
-        </button>
-
-        <div className="flex grow text-xl items-center border-1 border-accent-color-2 p-4 py-3 mx-3 rounded-2xl">
+    <div className="flex flex-col h-full max-w-1000 w-full">
+      <div className="flex flex-col flex-none mb-5 w-full">
+        <div className="w-full flex grow text-xl items-center border-1 border-accent-color-2 p-4 py-3 mx-0 rounded-2xl">
           <input
             type="text"
             placeholder="Search here!!"
-            className="grow px-2 rounded-2xl outline-none text-3xl"
+            className="grow px-2 rounded-2xl outline-none text-3xl w-full"
           />
           <button type="submit" className="flex items-center hover:scale-110">
             <FaSearch />
           </button>
         </div>
       </div>
-
-      <div className="h-full flex flex-nowrap max-w-11/12 overflow-x-scroll">
-        {data.map((item, index) => <CourseCard element={item} key={index} />)}
+      <div className="h-full flex flex-nowrap max-w-11/12 overflow-x-auto w-full">
+        {data.map((item, index) => (
+          <CourseCard
+            element={item}
+            key={index}
+            allStudents={allStudents}
+            onUpdateCourse={handleUpdateCourse}
+          />
+        ))}
       </div>
     </div>
   );

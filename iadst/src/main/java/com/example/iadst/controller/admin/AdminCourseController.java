@@ -19,7 +19,7 @@ import java.util.Map;
 
 @CrossOrigin( origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/admin/course")
+@RequestMapping("/api/admin/course")
 @Validated
 public class AdminCourseController {
 
@@ -63,7 +63,7 @@ public class AdminCourseController {
 
     @PutMapping(path = "/{id}")
     public ResponseEntity<Courses> updateStudentDetail(@PathVariable String id, @RequestBody HashMap<String, String> modifiedItems){
-        System.out.println(id);
+        // System.out.println(id);
 
         if(!courseRepo.existsById(new ObjectId(id))){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Courses("NO Student with id-"+ id + "is Found"));
@@ -91,14 +91,14 @@ public class AdminCourseController {
     @DeleteMapping(path = "/{id}/students/{studentId}")
     public ResponseEntity<Courses> removeStudentInCourse(@PathVariable("id") String id, @PathVariable("studentId") String studendId){
         Courses courseElement = courseRepo.findById(new ObjectId(id)).get();
-        System.out.println(courseElement.toString());
+        // System.out.println(courseElement.toString());
         String removeStudentId = courseElement.removeStudent(studendId);
         if(removeStudentId == null){
             courseElement.setMessage("Element Not Found");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(courseElement);
         }
         courseRepo.save(courseElement);
-        System.out.println(courseElement.getStudents());
+        // System.out.println(courseElement.getStudents());
         courseElement.setMessage("Successfully remove Student with Id ("+studendId+")");
         return ResponseEntity.status(HttpStatus.OK).body(courseElement);
     }
@@ -106,7 +106,7 @@ public class AdminCourseController {
     @PostMapping(path = "/{id}/students/{studentId}")
     public ResponseEntity<Courses> addStudentInCourse(@PathVariable("id") String id, @PathVariable("studentId") String studendId){
         Courses courseElement = courseRepo.findById(new ObjectId(id)).get();
-        System.out.println(courseElement.toString());
+        // System.out.println(courseElement.toString());
         courseElement.addStudent(studendId);
         courseRepo.save(courseElement);
         return ResponseEntity.status(HttpStatus.OK).body(courseElement);

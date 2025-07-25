@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/teachers")
+@RequestMapping("/api/admin/teachers")
 @Validated
 @Tag(name = "Teacher Management", description = "APIs for managing teachers")
 public class AdminTeacherController {
@@ -77,7 +77,7 @@ public class AdminTeacherController {
     @Operation(summary = "Add new teacher", description = "Creates a new teacher")
     public ResponseEntity<?> addTeacher(@Valid @RequestBody Teachers teacher) {
         if (teacherRepo.existsByEmail(teacher.getEmail())) {
-            System.out.println("Teacher Email exist");
+            // System.out.println("Teacher Email exist");
             Map<String, Object> response = new HashMap<>();
             response.put("timestamp", new Date());
             response.put("status", HttpStatus.CONFLICT.value());
@@ -87,7 +87,7 @@ public class AdminTeacherController {
         }
 
         if (teacherRepo.existsByFacultyId(teacher.getFacultyId())) {
-            System.out.println("Teacher FacultyId exist");
+            // System.out.println("Teacher FacultyId exist");
             Map<String, Object> response = new HashMap<>();
             response.put("timestamp", new Date());
             response.put("status", HttpStatus.CONFLICT.value());

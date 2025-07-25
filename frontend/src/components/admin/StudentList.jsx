@@ -5,6 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
 import ItemCard from './ItemCard';
 import Alert from '../common/Alert';
+import api from '../../api/axios';
 
 
 function AddItem() {
@@ -20,11 +21,8 @@ function StudentList() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const resp = await fetch("http://localhost:8080/admin/students/all");
-        if (!resp.ok) {
-          throw new Error(`Failed to fetch students (${resp.status} ${resp.statusText})`);
-        }
-        const res = await resp.json();
+        const resp = await api.get("/admin/students/all");
+        const res = resp.data;
         setData(res.reverse());
         setError(null);
       } catch (e) {

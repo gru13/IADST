@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
 import ItemCard from './ItemCard';
 import Alert from '../common/Alert';
+import api from '../../api/axios';
 
 function TeacherList() {
   const [data, setData] = useState([]);
@@ -14,11 +15,8 @@ function TeacherList() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const resp = await fetch("http://localhost:8080/admin/teachers/all");
-        if (!resp.ok) {
-          throw new Error(`Failed to fetch teachers (${resp.status} ${resp.statusText})`);
-        }
-        const res = await resp.json();
+        const resp = await api.get("/admin/teachers/all");
+        const res = resp.data;
         setData(res.reverse()); 
         setError(null);
       } catch (e) {
@@ -60,11 +58,8 @@ function TeacherList() {
 
   async function deleteItem(Id) {
     try {
-      const url = `http://localhost:8080/admin/teachers/${Id}`;
-      const respon = await fetch(url, { method: 'DELETE' });
-      if (!respon.ok) {
-        throw new Error(`Failed to delete teacher (${respon.status} ${respon.statusText})`);
-      }
+      const url = `/admin/teachers/${Id}`;
+      const respon = await api.delete(url);
       // Update state immediately
       setData(prev => prev.filter(t => t["id"] !== Id));
       setError(null);

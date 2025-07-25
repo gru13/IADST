@@ -24,9 +24,9 @@ public class StudentsService {
         mongoTemplate.updateFirst(query, update, Students.class);
         Students UpdatedItem = mongoTemplate.findOne(query, Students.class);
 
-        if (UpdatedItem != null) {
-            System.out.println(UpdatedItem.toString());
-        }
+        // if (UpdatedItem != null) {
+        //     System.out.println(UpdatedItem.toString());
+        // }
         return UpdatedItem;
     }
 

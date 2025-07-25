@@ -17,7 +17,7 @@ import java.util.List;
 @Validated
 @CrossOrigin( origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/admin/students")
+@RequestMapping("/api/admin/students")
 public class AdminStudentController {
 
     @Autowired
@@ -34,15 +34,15 @@ public class AdminStudentController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Students> getStudentByID(@PathVariable String id){
-        System.out.println(id);
+        // System.out.println(id);
         Students stu = studentRepo.findById(new ObjectId(id)).get();
-        System.out.println(stu.toString());
+        // System.out.println(stu.toString());
         return ResponseEntity.status(HttpStatus.OK).body(stu);
     }
 
     @PostMapping(path = "/")
     public ResponseEntity<?> addStudent(@Valid @RequestBody Students item){
-        System.out.println(item.toString());
+        // System.out.println(item.toString());
 
         if(studentRepo.existsByEmail(item.getEmail())){
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -51,7 +51,7 @@ public class AdminStudentController {
 
         Students result =  studentRepo.save(item);
 
-        System.out.println(result.toString());
+        // System.out.println(result.toString());
 
         return  ResponseEntity.status(HttpStatus.OK).body(result);
     }

@@ -4,6 +4,7 @@ import { MdOutlineLocalPhone } from "react-icons/md";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { MdOutlineDelete } from "react-icons/md";
 import { LiaSave } from "react-icons/lia";
+import api from '../../api/axios';
 
 
 
@@ -98,15 +99,15 @@ function ItemCard({ element, deleteItem, editValue, setData, setAddToggle, type_
 
 
         try {
-            const respon = await fetch(url, {
+            const respon = await api(url, {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(itemData)
+                data: itemData
             });
 
-            const re = await respon.json();
+            const re = respon.data;
 
             if (!respon.ok) {
                 if (respon.status === 400) {

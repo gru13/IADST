@@ -22,9 +22,9 @@ public class CourseService {
         mongoTemplate.updateFirst(query, update, Courses.class);
         Courses UpdatedItem = mongoTemplate.findOne(query, Courses.class);
 
-        if (UpdatedItem != null) {
-            System.out.println(UpdatedItem.toString());
-        }
+        // if (UpdatedItem != null) {
+        //     System.out.println(UpdatedItem.toString());
+        // }
 
         return UpdatedItem;
     }
