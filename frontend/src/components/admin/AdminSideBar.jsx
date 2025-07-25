@@ -13,8 +13,6 @@ import { IoClose } from "react-icons/io5";
 function AdminSideBar({currentPage, setCurrentPage}) {
     const [sideBarToggle, setSideBarToggle] = useState(false);
 
-
-
     const buttonStyle = `basis-20 m-4 p-3 flex items-center  text-2xl  transform-all duration-400 ease-in-out hover:rounded-3xl hover:scale-110`;
     const spanClassStyle =`p-2 ${sideBarToggle ? 'w-[20%]' : 'hidden'}`
     return (

@@ -52,10 +52,7 @@ public class Courses {
     }
 
     public String getId() {
-        if(this.id == null){
-            return "null";
-        }
-        return this.id.toString();
+        return id != null ? id.toHexString() : null;
     }
 
     public String getTeacherID(){
@@ -67,6 +64,10 @@ public class Courses {
 
     public List<String> getStudents(){
         return this.students.stream().map(a->a.toString()).toList();
+    }
+
+    public List<ObjectId> getStudentsId(){
+        return this.students;
     }
 
     public String removeStudent(String id){

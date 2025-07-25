@@ -1,6 +1,8 @@
 package com.example.iadst.services;
 
 import com.example.iadst.models.Teachers;
+import jakarta.annotation.Nullable;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -50,4 +52,16 @@ public class TeacherService {
 
         return updatedItem;
     }
+
+    @Nullable
+    public String getTeacherName(String Id){
+        Query q = new Query( Criteria.where("id").is(Id)) ;
+        if(mongoTemplate.exists(q, Teachers.class)){
+            Teachers teacher = mongoTemplate.findOne(q, Teachers.class);
+            return  teacher.getName();
+        }else {
+            return  null;
+        }
+    }
+
 }

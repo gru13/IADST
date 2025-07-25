@@ -34,11 +34,13 @@ public class AdminStudentController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Students> getStudentByID(@PathVariable String id){
-        return ResponseEntity.status(HttpStatus.OK).body(studentRepo.findById(new ObjectId(id)).get());
+        System.out.println(id);
+        Students stu = studentRepo.findById(new ObjectId(id)).get();
+        System.out.println(stu.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(stu);
     }
 
     @PostMapping(path = "/")
-
     public ResponseEntity<?> addStudent(@Valid @RequestBody Students item){
         System.out.println(item.toString());
 

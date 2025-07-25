@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Document(collection = "teachers")
+@Document(collection = "faculties")
 public class Teachers {
     @Id
     private ObjectId id;

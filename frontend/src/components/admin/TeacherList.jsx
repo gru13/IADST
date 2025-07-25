@@ -1,64 +1,114 @@
 // TeacherList.jsx
-// Table of teachers with actions
 import { useEffect, useState } from 'react';
 import { FaSearch } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
 import ItemCard from './ItemCard';
+import Alert from '../common/Alert';
 
 function TeacherList() {
+  const [data, setData] = useState([]);
+  const [addToggle, setAddToggle] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [data, setData] = useState([])
-
+  // Initial fetch only when component mounts
   useEffect(() => {
-    fetch("http://localhost:8080/admin/teachers/all")
-      .then(resp => resp.json())
-      .then(res => { setData(res) })
-      .catch(e => console.log(e))
+    const fetchTeachers = async () => {
+      try {
+        const resp = await fetch("http://localhost:8080/admin/teachers/all");
+        if (!resp.ok) {
+          throw new Error(`Failed to fetch teachers (${resp.status} ${resp.statusText})`);
+        }
+        const res = await resp.json();
+        setData(res.reverse()); 
+        setError(null);
+      } catch (e) {
+        console.error(e);
+        setError("Failed to load teachers. Please try again later.");
+      }
+    };
+    fetchTeachers();
   }, [])
+
+
+  let newEle = { "facultyId": "" , "name": "", "email": "", "phoneNo": "" };
+
+  const AddButtonArea = addToggle ? (
+    <ItemCard 
+      element={newEle}
+      key={-1}
+      deleteItem={deleteItem}
+      editValue={true}
+      setData={setData}
+      setAddToggle={setAddToggle}
+      type_="teachers"
+      setError={setError}
+    />
+  ) : (
+    <div
+      className="p-5 border-2 border-emerald-500 w-120 h-70 m-5 rounded-3xl 
+               hover:shadow-2xl hover:scale-110 hover:shadow-emerald-500 
+               flex items-center justify-center"
+      onClick={() => setAddToggle(true)} // Add this to trigger add mode
+    >
+      <button className="text-5xl">
+        <IoAddCircleOutline />
+      </button>
+    </div>
+  );
+
+
 
   async function deleteItem(Id) {
     try {
-      console.log(Id);
       const url = `http://localhost:8080/admin/teachers/${Id}`;
       const respon = await fetch(url, { method: 'DELETE' });
-      if(respon.ok){
-        setData(prev=>prev.filter(t=>t["id"] !== Id ))
+      if (!respon.ok) {
+        throw new Error(`Failed to delete teacher (${respon.status} ${respon.statusText})`);
       }
-      const result = await respon.json();
-      
-      console.log(result);
-
-    } catch (error) {
-      console.log(error);
+      // Update state immediately
+      setData(prev => prev.filter(t => t["id"] !== Id));
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to delete teacher. Please try again later.");
     }
-
   }
-
-
-  // const Items = data.map((teacher, index) => (
-  //   <ItemCard data={teacher} key={index} />
-  // ));
 
 
   return (
     <div className="flex flex-col h-full">
+      {error && (
+        <Alert
+          message={error}
+          type="error"
+          onClose={() => setError(null)}
+        />
+      )}
 
       <div className='flex text-3xl items-center justify-between flex-none' >
-
-        <button><IoAddCircleOutline /></button>
-
         <div className='flex grow text-xl items-center border-1 border-accent-color-2 p-4 py-3 mx-3 rounded-2xl'>
           <input type="text" placeholder='Search here!!' className='grow px-2 rounded-2xl outline-none text-3xl' />
           <button type="submit" className='flex items-center hover:scale-110'>
             <FaSearch />
           </button>
         </div>
-
       </div>
 
       <div className='Itemlist pt-9 flex flex-wrap justify-evenly flex-1 overflow-y-auto'>
+
+        {AddButtonArea}
+
         {data.map((teacher, index) => (
-          <ItemCard element={teacher} key={index} deleteItem={deleteItem} />
+          <ItemCard 
+            element={teacher}
+            key={index}
+            deleteItem={deleteItem}
+            editValue={false}
+            type_="teachers"
+            setError={setError}
+            setData={setData}
+            setAddToggle={setAddToggle}
+          />
         ))}
       </div>
 

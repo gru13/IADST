@@ -9,10 +9,12 @@ import com.example.iadst.services.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +61,16 @@ public class AdminTeacherController {
         return teacherRepo.findById(new ObjectId(id))
             .map(ResponseEntity::ok)
             .orElseThrow(() -> new ResourceNotFoundException("Teacher", "id", id));
+    }
+
+    @GetMapping("/{id}/name")
+    @Operation(summary = "gives out the faculty name for Given facultyId")
+    public ResponseEntity<String> getTeacherName(@PathVariable String id){
+        String result = teacherService.getTeacherName(id);
+        if(result == null){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Faculty ID Not Found");
+        }
+        return  ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping

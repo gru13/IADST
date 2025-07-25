@@ -7,13 +7,11 @@ import com.example.iadst.services.CourseService;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.sound.midi.Soundbank;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +79,7 @@ public class AdminCourseController {
         return  ResponseEntity.status(HttpStatus.OK).body(result.getLast());
     }
 
-    @GetMapping(path = "/{id}/courses")
+    @GetMapping(path = "/{id}/students")
     public ResponseEntity<List<String>> studentsInCourse(@PathVariable String id){
         List<String> students = courseRepo.findById(new ObjectId(id)).get().getStudents();
         if (students == null){
