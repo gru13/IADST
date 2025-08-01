@@ -55,7 +55,7 @@ public class Courses {
         return id != null ? id.toHexString() : null;
     }
 
-    public String getTeacherID(){
+    public String getFacultyId() {
         if(this.facultyId == null){
             return "null";
         }
@@ -63,12 +63,9 @@ public class Courses {
     }
 
     public List<String> getStudents(){
-        return this.students.stream().map(a->a.toString()).toList();
+        return this.students.stream().map(ObjectId::toString).toList();
     }
 
-    public List<ObjectId> getStudentsId(){
-        return this.students;
-    }
 
     public String removeStudent(String id){
         int index = students.indexOf(new ObjectId(id));
