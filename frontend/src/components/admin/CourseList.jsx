@@ -17,7 +17,7 @@ function CourseCard({ element, allStudents, onUpdateCourse }) {
   useEffect(() => {
     const getTeacherList = async () => {
       try {
-        const response = await api.get('/admin/teachers/all/list/name');
+        const response = await api.get('/admin/teachers/all/list/name'); // Remove duplicate 'api/' if present
         setTeacherList(response.data);
       } catch (error) {
         alert(`Error fetching teachers: ${error.message}`);
@@ -60,63 +60,56 @@ function CourseCard({ element, allStudents, onUpdateCourse }) {
   const handleDelete = () => { };
 
 
-  const InputStyle = `px-2 py-2 grow outline-0 text-2xl ${edit ? 'underline underline-offset-6' : 'caret-transparent'}`
-
   return (
-    <div className="p-5 h-11/12 group font-['fira_code']   rounded-2xl  border-2 m-2 flex">
-      <div className="w-11/12">
+    <div className="p-6 rounded-2xl border-2 border-gray-300 shadow-md m-4 flex flex-col w-full max-w-lg ">
+      <div className="flex flex-col gap-2 mb-4">
         <input
           type="text"
-          className={InputStyle}
-          placeholder="Name"
+          className="px-3 py-2 text-2xl rounded-lg border border-gray-200 focus:border-emerald-500 focus:outline-none "
+          placeholder="Course Name"
           value={item.courseName}
-          readOnly={edit}
-          onChange={(e) => handleChanges(e)}
+          readOnly={!edit}
+          onChange={handleChanges}
         />
-
-
-        <select name="FacultyName" id="FacultyName">
-
+        <select
+          name="FacultyName"
+          id="FacultyName"
+          className="px-3 py-2 text-xl rounded-lg border border-gray-200 focus:border-emerald-500 focus:outline-none "
+        >
           {teachersList.map((teacher, index) => (
             <option key={index} value={teacher}>
               {teacher}
             </option>
           ))}
-
         </select>
-
-        <div className="mt-4 flex grow overflow-y-auto">
-          <h3 className="text-xl font-bold">Students:</h3>
-          <ul>
-            {studentsList.map((student, index) => (
-              <li key={index} className="text-lg flex items-center">
-                {student.name} ({student.rollNumber})
-                <button
-                  className="ml-2 text-red-500 hover:text-red-700"
-                  onClick={() => handleRemoveStudent(student.id)}
-                  title="Remove student"
-                >
-                  <MdOutlineDelete />
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
-      <div
-        className={`text-3xl py-5 group-hover:block ${edit ? "justify-start" : "hidden"
-          }`}
-      >
+      <div className="mt-2 mb-4">
+        <h3 className="text-lg font-semibold mb-2">Students:</h3>
+        <ul className="space-y-1">
+          {studentsList.map((student, index) => (
+            <li key={index} className="flex items-center justify-between border-1 rounded-lg px-3 py-1">
+              <span>{student.name} ({student.rollNumber})</span>
+              <button
+                className="ml-2 text-red-500 hover:text-red-700"
+                onClick={() => handleRemoveStudent(student.id)}
+                title="Remove student"
+              >
+                <MdOutlineDelete />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="flex gap-4 mt-auto">
         <button
           onClick={() => setEdit(!edit)}
-          className="felx items-start hover:scale-110 hover:rotate-12 hover:text-emerald-500"
+          className="flex items-center px-4 py-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition"
         >
           {edit ? <MdOutlineSave /> : <MdOutlineEdit />}
         </button>
-
         <button
-          className="py-5 hover:text-red-500 hover:scale-110"
-          onClick={() => handleDelete()}
+          className="flex items-center px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+          onClick={handleDelete}
         >
           <MdOutlineDelete />
         </button>

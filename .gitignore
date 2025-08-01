@@ -3,3 +3,4 @@
 *.log   
 docker-data
 __pycache__
+.gitpod.yml

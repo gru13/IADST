@@ -15,7 +15,7 @@ function TeacherList() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const resp = await api.get("/admin/teachers/all");
+        const resp = await api.get("/admin/teachers/all"); // Use relative path, baseURL is set in axios.js
         const res = resp.data;
         setData(res.reverse()); 
         setError(null);
